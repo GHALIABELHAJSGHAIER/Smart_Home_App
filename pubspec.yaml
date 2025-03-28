@@ -41,6 +41,7 @@ dependencies:
 
   jwt_decoder: ^2.0.1
   shared_preferences: ^2.2.3
+  http: ^1.2.2
   get: ^4.6.1
   
 
@@ -48,6 +49,7 @@ dev_dependencies:
   flutter_test:
     sdk: flutter
   flutter_launcher_icons: "^0.14.3"
+
 flutter_launcher_icons:
   android: "launcher_icon"
   image_path: "assets/logo1.png"
