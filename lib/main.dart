@@ -1,23 +1,29 @@
-import 'package:clone_spotify_mars/screens/ajouter_Maison_page.dart';
-import 'package:clone_spotify_mars/screens/routes_page.dart';
 import 'package:flutter/material.dart';
-import 'screens/login_page.dart';
-import 'screens/home_page.dart';
-import 'screens/welcome_page.dart';
+import 'package:jwt_decoder/jwt_decoder.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import '../screens/home_page.dart';
+import '../screens/signin_page.dart';
 
-void main() {
-  runApp(const MyApp());
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  SharedPreferences prefs = await SharedPreferences.getInstance();
+  String? token = prefs.getString('token');
+  runApp(MyApp(token: token));
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  final String? token;
+  const MyApp({super.key, this.token});
 
   @override
   Widget build(BuildContext context) {
-    //return MaterialApp(title: 'Spotify', home: LoginPage());
-    //return MaterialApp(title: 'Smart Home', home: HomeScreen());
-    //return MaterialApp(title: 'Smart Home', home: WelcomePage());
-    return MaterialApp(title: 'Spotify', home: RoutesPage());
-    //return MaterialApp(title: 'Spotify', home: AjouterMaisonPage());
+    return MaterialApp(
+      debugShowCheckedModeBanner: false,
+      title: 'Todo App',
+      home:
+          token != null && !JwtDecoder.isExpired(token!)
+              ? HomePage(token: token!)
+              : const SigninPage(),
+    );
   }
 }

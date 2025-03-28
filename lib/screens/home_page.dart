@@ -1,164 +1,214 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:get/get.dart';
+import 'package:jwt_decoder/jwt_decoder.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import '../controllers/todo_controller.dart';
+import '../models/todo_model.dart';
+import '../screens/signin_page.dart';
 
-class HomeScreen extends StatelessWidget {
+class HomePage extends StatefulWidget {
+  const HomePage({super.key, required this.token});
+  final String token;
+
+  @override
+  State<HomePage> createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
+  final controller = Get.put(TodoController());
+  late TextEditingController _titleController;
+  late TextEditingController _descriptionController;
+  late SharedPreferences prefs;
+  late List<TodoModel> items = [];
+
+  late String email;
+  late String userId;
+
+  void initSharedPref() async {
+    prefs = await SharedPreferences.getInstance();
+  }
+
+  Future<void> _loadTodoList() async {
+    List<TodoModel> fetchedItems = await controller.getTodoList(userId);
+    setState(() {
+      items = fetchedItems;
+    });
+  }
+
+  @override
+  initState() {
+    _titleController = TextEditingController();
+    _descriptionController = TextEditingController();
+    Map<String, dynamic> jwtDecodedToken = JwtDecoder.decode(widget.token);
+    email = jwtDecodedToken['email'];
+    userId = jwtDecodedToken['_id'];
+    _loadTodoList();
+    initSharedPref();
+
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    _titleController.dispose();
+    _descriptionController.dispose();
+    controller.dispose();
+
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
+        appBar: AppBar(
+          foregroundColor: Colors.black,
+          backgroundColor: Colors.white,
+          title: Text(
+            "Home Page",
+            style: TextStyle(fontSize: 24, fontWeight: FontWeight.w400),
+          ),
+          centerTitle: true,
+          actions: <Widget>[
+            IconButton(
+              icon: Icon(Icons.logout_outlined, color: Colors.black),
+              onPressed: () async {
+                await prefs.remove('token');
+                Navigator.pushAndRemoveUntil(
+                  context,
+                  MaterialPageRoute(builder: (context) => SigninPage()),
+                  (Route<dynamic> route) => false,
+                );
+              },
+            ),
+          ],
+        ),
         body: Container(
+          padding: EdgeInsets.all(10),
           width: double.infinity,
+          height: double.infinity,
           decoration: BoxDecoration(
             image: DecorationImage(
-              image: AssetImage("assets/images/background.png"),
+              image: AssetImage("assets/maison2.png"),
               fit: BoxFit.cover,
             ),
           ),
-          child: SingleChildScrollView(
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                SizedBox(height: MediaQuery.of(context).size.height * 0.05),
-                _buildTopSection(),
-                _buildWeatherDetails(),
-                SizedBox(height: 20), // Ajustement pour éviter un trop grand espace
-                _buildForecast(),
-              ],
-            ),
+          child: Column(
+            children: [
+              Center(child: Image.asset("assets/logo_text.png")),
+              SizedBox(height: 10),
+              items.isEmpty
+                  ? const Center(
+                    child: Text(
+                      textAlign: TextAlign.center,
+                      "No Data \n Add New Task",
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  )
+                  : Expanded(
+                    child: FutureBuilder<List<TodoModel>>(
+                      future: controller.getTodoList(userId),
+                      builder: (context, snapshot) {
+                        if (snapshot.hasData) {
+                          return ListView.builder(
+                            itemCount: snapshot.data!.length,
+                            itemBuilder:
+                                ((context, index) => ListTile(
+                                  leading: Image.asset("assets/logo.png"),
+                                  title: Text(snapshot.data![index].title!),
+                                  subtitle: Text(snapshot.data![index].desc!),
+                                  trailing: IconButton(
+                                    onPressed: () {
+                                      print(
+                                        "Delete item ${snapshot.data![index].id!}",
+                                      );
+                                      controller.deleteTodo(
+                                        snapshot.data![index].id!,
+                                      );
+                                      _loadTodoList();
+                                    },
+                                    icon: Icon(Icons.delete, color: Colors.red),
+                                  ),
+                                )),
+                          );
+                        } else {
+                          return Center(child: CircularProgressIndicator());
+                        }
+                      },
+                    ),
+                  ),
+            ],
           ),
+        ),
+        floatingActionButton: FloatingActionButton(
+          onPressed: () => _displayTextInputDialog(context),
+          child: const Icon(Icons.add),
         ),
       ),
     );
   }
 
-  Widget _buildTopSection() {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 20),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            'Montreal',
-            style: TextStyle(
-              color: Colors.white,
-              fontSize: 32,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-          SizedBox(height: 5),
-          Text(
-            '19°',
-            style: TextStyle(
-              color: Colors.white,
-              fontSize: 64,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-          Text(
-            'Mostly Clear',
-            style: TextStyle(color: Colors.white70, fontSize: 18),
-          ),
-          SizedBox(height: 5),
-          Text(
-            'H: 24°  L: 18°',
-            style: TextStyle(color: Colors.white70, fontSize: 16),
-          ),
-          SizedBox(height: 10),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildWeatherDetails() {
-    return Padding(
-      padding: const EdgeInsets.all(20),
-      child: Column(
-        children: [
-          Image.asset('assets/images/weather_house.png', height: 180),
-          // Suppression de SizedBox(height: 10) ici
-          // Suppression du Container vide qui créait un espace inutile
-        ],
-      ),
-    );
-  }
-
-  Widget _buildForecast() {
-    return Container(
-      padding: EdgeInsets.all(5),
-      decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.1),
-        borderRadius: BorderRadius.vertical(top: Radius.circular(30)),
-      ),
-      child: Column(
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
+  Future<void> _displayTextInputDialog(BuildContext context) async {
+    return showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text("Add todo"),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
             children: [
-              Text(
-                'Hourly Forecast',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 16,
-                  fontWeight: FontWeight.w600,
+              TextField(
+                controller: _titleController,
+                keyboardType: TextInputType.text,
+                decoration: const InputDecoration(
+                  filled: true,
+                  fillColor: Colors.white,
+                  hintText: "Title",
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(10)),
+                  ),
                 ),
+              ),
+              const SizedBox(height: 5),
+              TextField(
+                controller: _descriptionController,
+                keyboardType: TextInputType.text,
+                decoration: const InputDecoration(
+                  filled: true,
+                  fillColor: Colors.white,
+                  hintText: "description",
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.all(Radius.circular(10)),
+                  ),
+                ),
+              ),
+              const SizedBox(height: 5),
+              ElevatedButton(
+                onPressed: () async {
+                  final todo = TodoModel(
+                    userId: userId,
+                    title: _titleController.text,
+                    desc: _descriptionController.text,
+                  );
+                  var result = await controller.createTodo(todo);
+                  if (result['status'] == true) {
+                    _loadTodoList();
+                    Navigator.pop(context);
+                  } else {
+                    ScaffoldMessenger.of(
+                      context,
+                    ).showSnackBar(SnackBar(content: Text(result['error'])));
+                  }
+                },
+                child: const Text("Add"),
               ),
             ],
           ),
-          SizedBox(height: 10),
-          _buildHourlyForecast(),
-        ],
-      ),
-    );
-  }
-
-  Widget _buildHourlyForecast() {
-    List<Map<String, dynamic>> forecastData = [
-      {'time': '12 AM', 'temp': '19°', 'icon': FontAwesomeIcons.cloudRain},
-      {'time': 'Now', 'temp': '19°', 'icon': FontAwesomeIcons.cloud},
-      {'time': '2 AM', 'temp': '18°', 'icon': FontAwesomeIcons.cloudMoon},
-      {'time': '3 AM', 'temp': '19°', 'icon': FontAwesomeIcons.cloudSun},
-      {'time': '4 AM', 'temp': '19°', 'icon': FontAwesomeIcons.cloudRain},
-    ];
-
-    return Container(
-      height: 120,
-      child: ListView(
-        scrollDirection: Axis.horizontal,
-        children: forecastData
-            .map(
-              (data) => _buildHourlyItem(
-                data['time'],
-                data['temp'],
-                data['icon'],
-              ),
-            )
-            .toList(),
-      ),
-    );
-  }
-
-  Widget _buildHourlyItem(String time, String temp, IconData icon) {
-    return Container(
-      width: 90,
-      margin: EdgeInsets.symmetric(horizontal: 8),
-      decoration: BoxDecoration(
-        color: Colors.white.withOpacity(0.2),
-        borderRadius: BorderRadius.circular(20),
-        boxShadow: [
-          BoxShadow(color: Colors.black12, blurRadius: 6, offset: Offset(0, 4)),
-        ],
-      ),
-      child: Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Text(time, style: TextStyle(color: Colors.white, fontSize: 14)),
-          SizedBox(height: 5),
-          FaIcon(icon, color: Colors.white, size: 24),
-          SizedBox(height: 5),
-          Text(temp, style: TextStyle(color: Colors.white, fontSize: 14)),
-        ],
-      ),
+        );
+      },
     );
   }
 }

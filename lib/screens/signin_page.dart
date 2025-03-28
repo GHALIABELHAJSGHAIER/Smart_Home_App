@@ -2,39 +2,47 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:form_field_validator/form_field_validator.dart';
 import 'package:get/get.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import '../controllers/auth_controller.dart';
 import '../models/user_model.dart';
-import '../screens/signin_page.dart';
+import '../screens/home_page.dart';
+import '../screens/signup_page.dart';
 
-class SignupPage extends StatefulWidget {
-  const SignupPage({super.key});
+class SigninPage extends StatefulWidget {
+  const SigninPage({super.key});
 
   @override
-  State<SignupPage> createState() => _SignupPageState();
+  State<SigninPage> createState() => _SigninPageState();
 }
 
-late TextEditingController _usernameController;
-late TextEditingController _emailController;
-late TextEditingController _passwordController;
-late GlobalKey<FormState> _formkey;
-final controller = Get.put(AuthController());
-bool _isObscure = true;
+class _SigninPageState extends State<SigninPage> {
+  late TextEditingController _emailController;
+  late TextEditingController _passwordController;
+  late GlobalKey<FormState> _formkey;
+  bool _isObscure = true;
 
-class _SignupPageState extends State<SignupPage> {
+  final controller = Get.put(AuthController());
+  late SharedPreferences prefs;
+
+  void initSharedPref() async {
+    prefs = await SharedPreferences.getInstance();
+  }
+
   @override
   void initState() {
-    _usernameController = TextEditingController();
     _emailController = TextEditingController();
     _passwordController = TextEditingController();
     _formkey = GlobalKey<FormState>();
+    initSharedPref();
+
     super.initState();
   }
 
   @override
   void dispose() {
-    _usernameController.dispose();
     _emailController.dispose();
     _passwordController.dispose();
+    controller.dispose();
 
     super.dispose();
   }
@@ -47,7 +55,7 @@ class _SignupPageState extends State<SignupPage> {
           foregroundColor: Colors.black,
           backgroundColor: Colors.white,
           title: Text(
-            "Sign Up",
+            "Sign In",
             style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
           ),
           centerTitle: true,
@@ -71,9 +79,10 @@ class _SignupPageState extends State<SignupPage> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Center(child: Image.asset("assets/logo_text.png")),
+
                       Center(
                         child: Text(
-                          "Create an account once and log in to all our services.",
+                          "Create an account once and log in to all our services",
                           textAlign: TextAlign.center,
                           style: TextStyle(
                             color: Colors.black,
@@ -84,44 +93,7 @@ class _SignupPageState extends State<SignupPage> {
                       ),
                       SizedBox(height: 10),
                       Text(
-                        "Username",
-                        style: TextStyle(
-                          color: Colors.black,
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      SizedBox(height: 10),
-                      TextFormField(
-                        controller: _usernameController,
-                        decoration: InputDecoration(
-                          fillColor: Color.fromARGB(255, 76, 76, 76),
-                          filled: true,
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(20),
-                          ),
-                          labelText: "Username",
-                          labelStyle: TextStyle(
-                            color: Colors.white,
-                            fontSize: 20,
-                          ),
-                          prefixIcon: Icon(
-                            Icons.email_outlined,
-                            color: Colors.white,
-                          ),
-                        ),
-                        style: TextStyle(color: Colors.white, fontSize: 20),
-                        validator:
-                            MultiValidator([
-                              RequiredValidator(
-                                errorText: "username is required",
-                              ),
-                            ]).call,
-                      ),
-                      SizedBox(height: 10),
-                      SizedBox(height: 10),
-                      Text(
-                        "Email",
+                        "Email or username",
                         style: TextStyle(
                           color: Colors.black,
                           fontSize: 20,
@@ -137,7 +109,7 @@ class _SignupPageState extends State<SignupPage> {
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(20),
                           ),
-                          labelText: "Email",
+                          labelText: "Email or username",
                           labelStyle: TextStyle(
                             color: Colors.white,
                             fontSize: 20,
@@ -225,18 +197,23 @@ class _SignupPageState extends State<SignupPage> {
                               onPressed: () async {
                                 if (_formkey.currentState!.validate()) {
                                   final user = UserModel(
-                                    username: _usernameController.text,
                                     email: _emailController.text,
                                     password: _passwordController.text,
                                   );
                                   var result = await controller
-                                      .signupController(user);
-
+                                      .signinController(user);
                                   if (result['status'] == true) {
-                                    ScaffoldMessenger.of(context).showSnackBar(
-                                      SnackBar(
-                                        content: Text(result['success']),
+                                    var mytoken = result['token'];
+                                    prefs.setString('token', mytoken);
+                                    print("Stored Token: $mytoken");
+                                    Navigator.pushAndRemoveUntil(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder:
+                                            (context) =>
+                                                HomePage(token: mytoken),
                                       ),
+                                      (Route<dynamic> route) => false,
                                     );
                                   } else {
                                     ScaffoldMessenger.of(context).showSnackBar(
@@ -249,7 +226,7 @@ class _SignupPageState extends State<SignupPage> {
                                 }
                               },
                               child: Text(
-                                "Sign Up",
+                                "Sign In",
                                 style: TextStyle(
                                   color: Colors.white,
                                   fontWeight: FontWeight.bold,
@@ -258,12 +235,13 @@ class _SignupPageState extends State<SignupPage> {
                               ),
                             ),
                             SizedBox(height: 10),
+
                             TextButton(
                               onPressed: () {
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                    builder: (context) => const SigninPage(),
+                                    builder: (context) => const SignupPage(),
                                   ),
                                 );
                               },
@@ -275,9 +253,9 @@ class _SignupPageState extends State<SignupPage> {
                                         context,
                                       ).textTheme.headlineSmall!,
                                   children: const <TextSpan>[
-                                    TextSpan(text: "Have an account?  "),
+                                    TextSpan(text: "Don’t have an account?  "),
                                     TextSpan(
-                                      text: "Sign In",
+                                      text: "Sign Up",
                                       style: TextStyle(
                                         color: Colors.green,
                                         fontWeight: FontWeight.bold,
