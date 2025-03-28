@@ -4,7 +4,7 @@ import 'package:clone_spotify_mars/models/todo_model.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 import '../config.dart';
-import '../models/todo_model.dart';
+//import '../models/todo_model.dart';
 
 class TodoController extends GetxController {
   static TodoController get instance => Get.find();
