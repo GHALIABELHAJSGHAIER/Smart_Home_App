@@ -19,7 +19,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
-      title: 'Todo App',
+      title: 'Smart Home +',
       home:
           token != null && !JwtDecoder.isExpired(token!)
               ? HomePage(token: token!)

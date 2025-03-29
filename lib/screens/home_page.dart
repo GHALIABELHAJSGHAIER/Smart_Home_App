@@ -36,7 +36,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   @override
-  initState() {
+  /*initState() {
     _titleController = TextEditingController();
     _descriptionController = TextEditingController();
     Map<String, dynamic> jwtDecodedToken = JwtDecoder.decode(widget.token);
@@ -45,6 +45,22 @@ class _HomePageState extends State<HomePage> {
     _loadTodoList();
     initSharedPref();
 
+    super.initState();
+  }*/
+  
+  initState() {
+    _titleController = TextEditingController();
+    _descriptionController = TextEditingController();
+    try {
+      Map<String, dynamic> jwtDecodedToken = JwtDecoder.decode(widget.token);
+      email = jwtDecodedToken['email']?.toString() ?? '';
+      userId = jwtDecodedToken['_id']?.toString() ?? '';
+    } catch (e) {
+      email = '';
+      userId = '';
+    }
+    _loadTodoList();
+    initSharedPref();
     super.initState();
   }
 
