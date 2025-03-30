@@ -1,3 +1,4 @@
+import 'package:clone_spotify_mars/screens/welcome_page.dart';
 import 'package:flutter/material.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -23,7 +24,7 @@ class MyApp extends StatelessWidget {
       home:
           token != null && !JwtDecoder.isExpired(token!)
               ? HomePage(token: token!)
-              : const SigninPage(),
+              : WelcomeScreen(),
     );
   }
 }
