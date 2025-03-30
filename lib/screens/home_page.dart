@@ -47,7 +47,6 @@ class _HomePageState extends State<HomePage> {
 
     super.initState();
   }*/
-  
   initState() {
     _titleController = TextEditingController();
     _descriptionController = TextEditingController();
@@ -105,7 +104,7 @@ class _HomePageState extends State<HomePage> {
           height: double.infinity,
           decoration: BoxDecoration(
             image: DecorationImage(
-              image: AssetImage("assets/maison2.png"),
+              image: AssetImage("assets/background.png"),
               fit: BoxFit.cover,
             ),
           ),
@@ -113,6 +112,7 @@ class _HomePageState extends State<HomePage> {
             children: [
               Center(child: Image.asset("assets/logo_text.png")),
               SizedBox(height: 10),
+              
               items.isEmpty
                   ? const Center(
                     child: Text(
