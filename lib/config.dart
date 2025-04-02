@@ -9,6 +9,6 @@ const storeTodo = "${url}todo/storeTodo";
 const getTodo = "${url}todo/getUserTodoList";
 const deleteTodoItem = "${url}todo/deleteTodo";
 //maison
-const storeMaison = "${url}maisons/addMaisonForClient/";
-const getMaison = "${url}maisons/getMaisonsByClientId/";
+const storeMaison = "${url}maisons/addMaisonForClient";
+const getMaison = "${url}maisons/getMaisonsByClientId";
 const deleteMaison = "${url}maisons/deleteMaisonById";

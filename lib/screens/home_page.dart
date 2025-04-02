@@ -6,8 +6,6 @@ import 'package:jwt_decoder/jwt_decoder.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:uuid/uuid.dart';
 
-///import '../controllers/todo_controller.dart';
-//import '../models/todo_model.dart';
 import '../screens/signin_page.dart';
 
 class HomePage extends StatefulWidget {
@@ -20,8 +18,8 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   final controller = Get.put(MaisonController());
-  late TextEditingController _titleController;
-  late TextEditingController _descriptionController;
+  late TextEditingController _nameController;
+  late TextEditingController _addressController;
   late SharedPreferences prefs;
   late List<MaisonModel> items = [];
 
@@ -32,7 +30,7 @@ class _HomePageState extends State<HomePage> {
     prefs = await SharedPreferences.getInstance();
   }
 
-  Future<void> _loadTodoList() async {
+  Future<void> _loadMaisonList() async {
     List<MaisonModel> fetchedItems = await controller.getMaisonList(userId);
     setState(() {
       items = fetchedItems;
@@ -40,20 +38,9 @@ class _HomePageState extends State<HomePage> {
   }
 
   @override
-  /*initState() {
-    _titleController = TextEditingController();
-    _descriptionController = TextEditingController();
-    Map<String, dynamic> jwtDecodedToken = JwtDecoder.decode(widget.token);
-    email = jwtDecodedToken['email'];
-    userId = jwtDecodedToken['_id'];
-    _loadTodoList();
-    initSharedPref();
-
-    super.initState();
-  }*/
-  initState() {
-    _titleController = TextEditingController();
-    _descriptionController = TextEditingController();
+  void initState() {
+    _nameController = TextEditingController();
+    _addressController = TextEditingController();
     try {
       Map<String, dynamic> jwtDecodedToken = JwtDecoder.decode(widget.token);
       email = jwtDecodedToken['email']?.toString() ?? '';
@@ -62,17 +49,16 @@ class _HomePageState extends State<HomePage> {
       email = '';
       userId = '';
     }
-    _loadTodoList();
+    _loadMaisonList();
     initSharedPref();
     super.initState();
   }
 
   @override
   void dispose() {
-    _titleController.dispose();
-    _descriptionController.dispose();
+    _nameController.dispose();
+    _addressController.dispose();
     controller.dispose();
-
     super.dispose();
   }
 
@@ -117,51 +103,59 @@ class _HomePageState extends State<HomePage> {
               Center(child: Image.asset("assets/logo_text.png")),
               SizedBox(height: 10),
 
+              // Display the list or a message if empty
               items.isEmpty
                   ? const Center(
-                    child: Text(
-                      textAlign: TextAlign.center,
-                      "No Data \n Add New Task",
-                      style: TextStyle(
-                        fontSize: 20,
-                        fontWeight: FontWeight.bold,
+                      child: Text(
+                        textAlign: TextAlign.center,
+                        "No Data \n Add New Task",
+                        style: TextStyle(
+                          fontSize: 20,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    )
+                  : Expanded(
+                      child: FutureBuilder<List<MaisonModel>>(
+                        future: controller.getMaisonList(userId),
+                        builder: (context, snapshot) {
+                          if (snapshot.hasData) {
+                            return ListView.builder(
+                              itemCount: snapshot.data!.length,
+                              itemBuilder: ((context, index) => ListTile(
+                                leading: Image.asset("assets/logo.png"),
+                                title: Text(snapshot.data![index].name!),
+                                subtitle: Text(
+                                  snapshot.data![index].address!,
+                                ),
+                                trailing: IconButton(
+                                  onPressed: () async {
+                                    print(
+                                      "Delete item ${snapshot.data![index].id!}",
+                                    );
+                                    // Deleting the Maison
+                                    var result = await controller.deleteMaison(
+                                      snapshot.data![index].id!,
+                                    );
+                                    if (result) {
+                                      _loadMaisonList(); // Reload list after delete
+                                    } else {
+                                      ScaffoldMessenger.of(context).showSnackBar(
+                                          SnackBar(content: Text("Failed to delete")));
+                                    }
+                                  },
+                                  icon: Icon(Icons.delete, color: Colors.red),
+                                ),
+                              )),
+                            );
+                          } else if (snapshot.connectionState == ConnectionState.waiting) {
+                            return Center(child: CircularProgressIndicator());
+                          } else {
+                            return Center(child: Text("Failed to load data"));
+                          }
+                        },
                       ),
                     ),
-                  )
-                  : Expanded(
-                    child: FutureBuilder<List<MaisonModel>>(
-                      future: controller.getMaisonList(userId),
-                      builder: (context, snapshot) {
-                        if (snapshot.hasData) {
-                          return ListView.builder(
-                            itemCount: snapshot.data!.length,
-                            itemBuilder:
-                                ((context, index) => ListTile(
-                                  leading: Image.asset("assets/logo.png"),
-                                  title: Text(snapshot.data![index].name!),
-                                  subtitle: Text(
-                                    snapshot.data![index].address!,
-                                  ),
-                                  trailing: IconButton(
-                                    onPressed: () {
-                                      print(
-                                        "Delete item ${snapshot.data![index].id!}",
-                                      );
-                                      controller.deleteMaison(
-                                        snapshot.data![index].id!,
-                                      );
-                                      _loadTodoList();
-                                    },
-                                    icon: Icon(Icons.delete, color: Colors.red),
-                                  ),
-                                )),
-                          );
-                        } else {
-                          return Center(child: CircularProgressIndicator());
-                        }
-                      },
-                    ),
-                  ),
             ],
           ),
         ),
@@ -178,17 +172,17 @@ class _HomePageState extends State<HomePage> {
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: const Text("Add todo"),
+          title: const Text("Add Maison"),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
               TextField(
-                controller: _titleController,
+                controller: _nameController,
                 keyboardType: TextInputType.text,
                 decoration: const InputDecoration(
                   filled: true,
                   fillColor: Colors.white,
-                  hintText: "Title",
+                  hintText: "Name",
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.all(Radius.circular(10)),
                   ),
@@ -196,12 +190,12 @@ class _HomePageState extends State<HomePage> {
               ),
               const SizedBox(height: 5),
               TextField(
-                controller: _descriptionController,
+                controller: _addressController,
                 keyboardType: TextInputType.text,
                 decoration: const InputDecoration(
                   filled: true,
                   fillColor: Colors.white,
-                  hintText: "description",
+                  hintText: "Address",
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.all(Radius.circular(10)),
                   ),
@@ -210,21 +204,20 @@ class _HomePageState extends State<HomePage> {
               const SizedBox(height: 5),
               ElevatedButton(
                 onPressed: () async {
-                  final String maisonId = const Uuid().v4(); // Génère un ID unique
+                  final String maisonId = const Uuid().v4(); // Generate a unique ID
                   final maison = MaisonModel(
                     id: maisonId,
                     clientId: userId,
-                    name: _titleController.text,
-                    address: _descriptionController.text,
+                    name: _nameController.text,
+                    address: _addressController.text,
                   );
                   var result = await controller.createMaison(maison);
                   if (result['status'] == true) {
-                    _loadTodoList();
-                    Navigator.pop(context);
+                    _loadMaisonList(); // Reload list after adding new Maison
+                    Navigator.pop(context); // Close the dialog
                   } else {
-                    ScaffoldMessenger.of(
-                      context,
-                    ).showSnackBar(SnackBar(content: Text(result['error'])));
+                    ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text(result['error'] ?? "Failed to add")));
                   }
                 },
                 child: const Text("Add"),
