@@ -24,14 +24,14 @@ class _HomePageState extends State<HomePage> {
   late List<MaisonModel> items = [];
 
   late String email;
-  late String userId;
+  late String clientId;
 
   void initSharedPref() async {
     prefs = await SharedPreferences.getInstance();
   }
 
   Future<void> _loadMaisonList() async {
-    List<MaisonModel> fetchedItems = await controller.getMaisonList(userId);
+    List<MaisonModel> fetchedItems = await controller.getMaisonList(clientId);
     setState(() {
       items = fetchedItems;
     });
@@ -44,10 +44,10 @@ class _HomePageState extends State<HomePage> {
     try {
       Map<String, dynamic> jwtDecodedToken = JwtDecoder.decode(widget.token);
       email = jwtDecodedToken['email']?.toString() ?? '';
-      userId = jwtDecodedToken['_id']?.toString() ?? '';
+      clientId = jwtDecodedToken['_id']?.toString() ?? '';
     } catch (e) {
       email = '';
-      userId = '';
+      clientId = '';
     }
     _loadMaisonList();
     initSharedPref();
@@ -106,56 +106,64 @@ class _HomePageState extends State<HomePage> {
               // Display the list or a message if empty
               items.isEmpty
                   ? const Center(
-                      child: Text(
-                        textAlign: TextAlign.center,
-                        "No Data \n Add New Task",
-                        style: TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    )
-                  : Expanded(
-                      child: FutureBuilder<List<MaisonModel>>(
-                        future: controller.getMaisonList(userId),
-                        builder: (context, snapshot) {
-                          if (snapshot.hasData) {
-                            return ListView.builder(
-                              itemCount: snapshot.data!.length,
-                              itemBuilder: ((context, index) => ListTile(
-                                leading: Image.asset("assets/logo.png"),
-                                title: Text(snapshot.data![index].name!),
-                                subtitle: Text(
-                                  snapshot.data![index].address!,
-                                ),
-                                trailing: IconButton(
-                                  onPressed: () async {
-                                    print(
-                                      "Delete item ${snapshot.data![index].id!}",
-                                    );
-                                    // Deleting the Maison
-                                    var result = await controller.deleteMaison(
-                                      snapshot.data![index].id!,
-                                    );
-                                    if (result) {
-                                      _loadMaisonList(); // Reload list after delete
-                                    } else {
-                                      ScaffoldMessenger.of(context).showSnackBar(
-                                          SnackBar(content: Text("Failed to delete")));
-                                    }
-                                  },
-                                  icon: Icon(Icons.delete, color: Colors.red),
-                                ),
-                              )),
-                            );
-                          } else if (snapshot.connectionState == ConnectionState.waiting) {
-                            return Center(child: CircularProgressIndicator());
-                          } else {
-                            return Center(child: Text("Failed to load data"));
-                          }
-                        },
+                    child: Text(
+                      textAlign: TextAlign.center,
+                      "No Data \n Add New Task",
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
                       ),
                     ),
+                  )
+                  : Expanded(
+                    child: FutureBuilder<List<MaisonModel>>(
+                      future: controller.getMaisonList(clientId),
+                      builder: (context, snapshot) {
+                        if (snapshot.hasData) {
+                          return ListView.builder(
+                            itemCount: snapshot.data!.length,
+                            itemBuilder:
+                                ((context, index) => ListTile(
+                                  leading: Image.asset("assets/logo.png"),
+                                  title: Text(snapshot.data![index].name!),
+                                  subtitle: Text(
+                                    snapshot.data![index].address!,
+                                  ),
+                                  trailing: IconButton(
+                                    onPressed: () async {
+                                      print(
+                                        "Delete item ${snapshot.data![index].id!}",
+                                      );
+                                      // Deleting the Maison
+                                      var result = await controller
+                                          .deleteMaison(
+                                            snapshot.data![index].id!,
+                                          );
+                                      if (result) {
+                                        _loadMaisonList(); // Reload list after delete
+                                      } else {
+                                        ScaffoldMessenger.of(
+                                          context,
+                                        ).showSnackBar(
+                                          SnackBar(
+                                            content: Text("Failed to delete"),
+                                          ),
+                                        );
+                                      }
+                                    },
+                                    icon: Icon(Icons.delete, color: Colors.red),
+                                  ),
+                                )),
+                          );
+                        } else if (snapshot.connectionState ==
+                            ConnectionState.waiting) {
+                          return Center(child: CircularProgressIndicator());
+                        } else {
+                          return Center(child: Text("Failed to load data"));
+                        }
+                      },
+                    ),
+                  ),
             ],
           ),
         ),
@@ -204,10 +212,11 @@ class _HomePageState extends State<HomePage> {
               const SizedBox(height: 5),
               ElevatedButton(
                 onPressed: () async {
-                  final String maisonId = const Uuid().v4(); // Generate a unique ID
+                  final String maisonId =
+                      const Uuid().v4(); // Generate a unique ID
                   final maison = MaisonModel(
                     id: maisonId,
-                    clientId: userId,
+                    clientId: clientId,
                     name: _nameController.text,
                     address: _addressController.text,
                   );
@@ -217,7 +226,10 @@ class _HomePageState extends State<HomePage> {
                     Navigator.pop(context); // Close the dialog
                   } else {
                     ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(content: Text(result['error'] ?? "Failed to add")));
+                      SnackBar(
+                        content: Text(result['error'] ?? "Failed to add"),
+                      ),
+                    );
                   }
                 },
                 child: const Text("Add"),
