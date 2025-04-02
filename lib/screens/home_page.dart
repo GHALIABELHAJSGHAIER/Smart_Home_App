@@ -1,9 +1,13 @@
+import 'package:clone_spotify_mars/controllers/maison_controller.dart';
+import 'package:clone_spotify_mars/models/maison_model.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import '../controllers/todo_controller.dart';
-import '../models/todo_model.dart';
+import 'package:uuid/uuid.dart';
+
+///import '../controllers/todo_controller.dart';
+//import '../models/todo_model.dart';
 import '../screens/signin_page.dart';
 
 class HomePage extends StatefulWidget {
@@ -15,11 +19,11 @@ class HomePage extends StatefulWidget {
 }
 
 class _HomePageState extends State<HomePage> {
-  final controller = Get.put(TodoController());
+  final controller = Get.put(MaisonController());
   late TextEditingController _titleController;
   late TextEditingController _descriptionController;
   late SharedPreferences prefs;
-  late List<TodoModel> items = [];
+  late List<MaisonModel> items = [];
 
   late String email;
   late String userId;
@@ -29,7 +33,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   Future<void> _loadTodoList() async {
-    List<TodoModel> fetchedItems = await controller.getTodoList(userId);
+    List<MaisonModel> fetchedItems = await controller.getMaisonList(userId);
     setState(() {
       items = fetchedItems;
     });
@@ -112,7 +116,7 @@ class _HomePageState extends State<HomePage> {
             children: [
               Center(child: Image.asset("assets/logo_text.png")),
               SizedBox(height: 10),
-              
+
               items.isEmpty
                   ? const Center(
                     child: Text(
@@ -125,8 +129,8 @@ class _HomePageState extends State<HomePage> {
                     ),
                   )
                   : Expanded(
-                    child: FutureBuilder<List<TodoModel>>(
-                      future: controller.getTodoList(userId),
+                    child: FutureBuilder<List<MaisonModel>>(
+                      future: controller.getMaisonList(userId),
                       builder: (context, snapshot) {
                         if (snapshot.hasData) {
                           return ListView.builder(
@@ -134,14 +138,16 @@ class _HomePageState extends State<HomePage> {
                             itemBuilder:
                                 ((context, index) => ListTile(
                                   leading: Image.asset("assets/logo.png"),
-                                  title: Text(snapshot.data![index].title!),
-                                  subtitle: Text(snapshot.data![index].desc!),
+                                  title: Text(snapshot.data![index].name!),
+                                  subtitle: Text(
+                                    snapshot.data![index].address!,
+                                  ),
                                   trailing: IconButton(
                                     onPressed: () {
                                       print(
                                         "Delete item ${snapshot.data![index].id!}",
                                       );
-                                      controller.deleteTodo(
+                                      controller.deleteMaison(
                                         snapshot.data![index].id!,
                                       );
                                       _loadTodoList();
@@ -204,12 +210,14 @@ class _HomePageState extends State<HomePage> {
               const SizedBox(height: 5),
               ElevatedButton(
                 onPressed: () async {
-                  final todo = TodoModel(
-                    userId: userId,
-                    title: _titleController.text,
-                    desc: _descriptionController.text,
+                  final String maisonId = const Uuid().v4(); // Génère un ID unique
+                  final maison = MaisonModel(
+                    id: maisonId,
+                    clientId: userId,
+                    name: _titleController.text,
+                    address: _descriptionController.text,
                   );
-                  var result = await controller.createTodo(todo);
+                  var result = await controller.createMaison(maison);
                   if (result['status'] == true) {
                     _loadTodoList();
                     Navigator.pop(context);
