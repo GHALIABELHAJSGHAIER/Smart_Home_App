@@ -23,6 +23,8 @@ class _ProfilePageState extends State<ProfilePage> {
   // Charger les informations de l'utilisateur depuis SharedPreferences
   _loadUserInfo() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
+    String? storedUsername = prefs.getString('username');
+print("Stored Username: $storedUsername"); // Vérifiez si le username est correctement stocké
     setState(() {
       username = prefs.getString('username');
       email = prefs.getString('email');
