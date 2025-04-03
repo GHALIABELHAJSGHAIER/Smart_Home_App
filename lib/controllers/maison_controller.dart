@@ -1,16 +1,13 @@
 import 'dart:convert';
-
 import 'package:clone_spotify_mars/config.dart';
 import 'package:clone_spotify_mars/models/maison_model.dart';
 import 'package:get/get.dart';
-import 'package:get/get_core/src/get_main.dart';
-import 'package:get/get_state_manager/src/simple/get_controllers.dart';
 import 'package:http/http.dart' as http;
 
 class MaisonController extends GetxController {
   static MaisonController get instance => Get.find();
 
-  Future<Map<String, dynamic>> createMaison(MaisonModel maison) async {
+   Future<Map<String, dynamic>> createMaison(MaisonModel maison) async {
     var response = await http.post(
       Uri.parse(storeMaison),
       headers: {"Content-Type": "application/json"},
@@ -20,41 +17,59 @@ class MaisonController extends GetxController {
     var jsonResponse = jsonDecode(response.body);
 
     if (jsonResponse['status'] == true) {
-      return {"status": true, "success": "Maison Registered Successfully"};
+      return {"status": true, "success": "MAISON Registered Successfully"};
     } else {
       return {
         "status": false,
-        "error": jsonResponse['message'] ?? "Maison Registration Failed",
+        "error": jsonResponse['message'] ?? "MAISON Failed",
       };
     }
   }
 
-  Future<List<MaisonModel>> getMaisonList(String userId) async {
-    var response = await http.get(
-      Uri.parse('$getMaison/$userId'),
-      headers: {"Content-Type": "application/json"},
-    );
 
+
+  // Get maison list: GET /maisons/getMaisonsByClientId/:clientId
+  Future<List<MaisonModel>> getMaisonList(String clientId) async {
     try {
-      var jsonResponse = jsonDecode(response.body);
-      if (jsonResponse['status']) {
-        return (jsonResponse['success'] as List)
-            .map((maison) => MaisonModel.fromJson(maison))
-            .toList();
+      var response = await http.get(
+        Uri.parse('$getMaison/$clientId'),
+        headers: {"Content-Type": "application/json"},
+      );
+
+      if (response.statusCode == 200) {
+        var jsonResponse = jsonDecode(response.body);
+
+        if (jsonResponse['status'] == true) {
+          return (jsonResponse['success'] as List)
+              .map((maison) => MaisonModel.fromJson(maison))
+              .toList();
+        } else {
+          return [];
+        }
       } else {
-        return [];
+        throw Exception("Failed to load data: ${response.statusCode}");
       }
     } catch (e) {
       return [];
     }
   }
 
+  // Delete maison: DELETE /maisons/deleteMaisonById/:id
   Future<bool> deleteMaison(String id) async {
-    var response = await http.delete(
-      Uri.parse('$deleteMaison/$id'),
-      headers: {"Content-Type": "application/json"},
-    );
-    var jsonResponse = jsonDecode(response.body);
-    return jsonResponse['status'];
+    try {
+      var response = await http.delete(
+        Uri.parse('$deleteMaison/$id'),
+        headers: {"Content-Type": "application/json"},
+      );
+
+      if (response.statusCode == 200) {
+        var jsonResponse = jsonDecode(response.body);
+        return jsonResponse['status'];
+      } else {
+        throw Exception("Failed to delete maison: ${response.statusCode}");
+      }
+    } catch (e) {
+      return false;
+    }
   }
 }
