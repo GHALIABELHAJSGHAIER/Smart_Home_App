@@ -196,7 +196,7 @@ class _ProfilePageState extends State<ProfilePage> {
           mainAxisAlignment: MainAxisAlignment.spaceAround,
           children: [
             IconButton(
-              icon: const Icon(Icons.home, color: Colors.black),
+              icon: const Icon(Icons.home, color: Color.fromARGB(255, 61, 14, 214)),
               onPressed: () {
                 // Action pour revenir à la page d'accueil
                 Navigator.pop(

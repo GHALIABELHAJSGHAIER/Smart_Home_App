@@ -75,7 +75,9 @@ class _HomePageState extends State<HomePage> {
             children: [
               TextField(
                 controller: _nameController,
-                decoration: const InputDecoration(labelText: "Nom de la maison"),
+                decoration: const InputDecoration(
+                  labelText: "Nom de la maison",
+                ),
               ),
               const SizedBox(height: 10),
               TextField(
@@ -93,7 +95,8 @@ class _HomePageState extends State<HomePage> {
             ),
             ElevatedButton(
               onPressed: () async {
-                if (_nameController.text.isNotEmpty && _addressController.text.isNotEmpty) {
+                if (_nameController.text.isNotEmpty &&
+                    _addressController.text.isNotEmpty) {
                   var maison = MaisonModel(
                     id: const Uuid().v4(),
                     name: _nameController.text,
@@ -136,7 +139,7 @@ class _HomePageState extends State<HomePage> {
           centerTitle: true,
           actions: <Widget>[
             IconButton(
-              icon: const Icon(Icons.logout_outlined, color: Colors.black),
+              icon: const Icon(Icons.logout_outlined, color: Color.fromARGB(255, 61, 14, 214)),
               onPressed: () async {
                 await prefs.remove('token');
                 Navigator.pushAndRemoveUntil(
@@ -166,50 +169,70 @@ class _HomePageState extends State<HomePage> {
               // Afficher la liste ou un message si vide
               items.isEmpty
                   ? const Center(
-                      child: Text(
-                        textAlign: TextAlign.center,
-                        "No Data \n Add New Task",
-                        style: TextStyle(
-                          fontSize: 20,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    )
-                  : Expanded(
-                      child: FutureBuilder<List<MaisonModel>>(
-                        future: controller.getMaisonList(clientId),
-                        builder: (context, snapshot) {
-                          if (snapshot.hasData) {
-                            return ListView.builder(
-                              itemCount: snapshot.data!.length,
-                              itemBuilder: (context, index) => ListTile(
-                                leading: Image.asset("assets/logo.png"),
-                                title: Text(snapshot.data![index].name!),
-                                subtitle: Text(snapshot.data![index].address!),
-                                trailing: IconButton(
-                                  onPressed: () async {
-                                    print("Delete item ${snapshot.data![index].id!}");
-                                    var result = await controller.deleteMaison(snapshot.data![index].id!);
-                                    if (result) {
-                                      _loadMaisonList();
-                                    } else {
-                                      ScaffoldMessenger.of(context).showSnackBar(
-                                        const SnackBar(content: Text("Failed to delete")),
-                                      );
-                                    }
-                                  },
-                                  icon: const Icon(Icons.delete, color: Colors.red),
-                                ),
-                              ),
-                            );
-                          } else if (snapshot.connectionState == ConnectionState.waiting) {
-                            return const Center(child: CircularProgressIndicator());
-                          } else {
-                            return const Center(child: Text("Failed to load data"));
-                          }
-                        },
+                    child: Text(
+                      textAlign: TextAlign.center,
+                      "No Data \n Add New Task",
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
                       ),
                     ),
+                  )
+                  : Expanded(
+                    child: FutureBuilder<List<MaisonModel>>(
+                      future: controller.getMaisonList(clientId),
+                      builder: (context, snapshot) {
+                        if (snapshot.hasData) {
+                          return ListView.builder(
+                            itemCount: snapshot.data!.length,
+                            itemBuilder:
+                                (context, index) => ListTile(
+                                  leading: Image.asset("assets/logo.png"),
+                                  title: Text(snapshot.data![index].name!),
+                                  subtitle: Text(
+                                    snapshot.data![index].address!,
+                                  ),
+                                  trailing: IconButton(
+                                    onPressed: () async {
+                                      print(
+                                        "Delete item ${snapshot.data![index].id!}",
+                                      );
+                                      var result = await controller
+                                          .deleteMaison(
+                                            snapshot.data![index].id!,
+                                          );
+                                      if (result) {
+                                        _loadMaisonList();
+                                      } else {
+                                        ScaffoldMessenger.of(
+                                          context,
+                                        ).showSnackBar(
+                                          const SnackBar(
+                                            content: Text("Failed to delete"),
+                                          ),
+                                        );
+                                      }
+                                    },
+                                    icon: const Icon(
+                                      Icons.delete,
+                                      color: Colors.red,
+                                    ),
+                                  ),
+                                ),
+                          );
+                        } else if (snapshot.connectionState ==
+                            ConnectionState.waiting) {
+                          return const Center(
+                            child: CircularProgressIndicator(),
+                          );
+                        } else {
+                          return const Center(
+                            child: Text("Failed to load data"),
+                          );
+                        }
+                      },
+                    ),
+                  ),
             ],
           ),
         ),
@@ -220,21 +243,23 @@ class _HomePageState extends State<HomePage> {
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
               IconButton(
-                icon: const Icon(Icons.home, color: Colors.black),
+                icon: const Icon(Icons.home, color: Color.fromARGB(255, 61, 14, 214)),
                 onPressed: () {
                   // Action pour Home
                 },
               ),
               const SizedBox(width: 40), // Espace pour le FloatingActionButton
               IconButton(
-                icon: const Icon(Icons.person, color: Colors.black),
+                icon: const Icon(Icons.person, color: Color.fromARGB(255, 61, 14, 214)),
                 onPressed: () {
                   // Action pour Profil
-                    // Naviguer vers la page ProfilePage
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => const ProfilePage()),
-    );
+                  // Naviguer vers la page ProfilePage
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const ProfilePage(),
+                    ),
+                  );
                 },
               ),
             ],
@@ -242,7 +267,7 @@ class _HomePageState extends State<HomePage> {
         ),
         floatingActionButton: FloatingActionButton(
           onPressed: _showAddMaisonDialog, // Ouvre la boîte de dialogue d'ajout
-          child: const Icon(Icons.add, color: Colors.white),
+          child: const Icon(Icons.add, color: Color.fromARGB(255, 107, 12, 12)),
         ),
         floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       ),
