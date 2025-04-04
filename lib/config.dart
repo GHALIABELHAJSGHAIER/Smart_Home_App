@@ -12,3 +12,9 @@ const deleteTodoItem = "${url}todo/deleteTodo";
 const storeMaison = "${url}maisons/addMaisonForClient/";
 const getMaison = "${url}maisons/getMaisonsByClientId";
 const deleteMaison = "${url}maisons/deleteMaisonById";
+
+//espace
+const addEspace = "${url}espaces/addEspaceForMaison";
+const getEspace = "${url}espaces/getAllEspacesByIdMaison";
+const deleteEspace = "${url}espaces/deleteEspaceById";
+const updateEspace = "${url}espaces/updateEspace";

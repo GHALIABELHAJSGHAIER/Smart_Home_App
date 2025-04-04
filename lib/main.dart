@@ -26,9 +26,9 @@ class MyApp extends StatelessWidget {
       home:
           token != null && !JwtDecoder.isExpired(token!)
               ? HomePage(token: token!)
-              : AppareilPage(),
-      //: WelcomeScreen(),
-      //: EspacePage(),
+              //: AppareilPage(),
+              //: WelcomeScreen(),
+              : EspacePage(),
     );
   }
 }

@@ -224,8 +224,13 @@ class _AppareilPageState extends State<AppareilPage> {
       context: context,
       builder: (context) {
         return AlertDialog(
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-          title: const Text("Ajouter un Appareil", style: TextStyle(fontWeight: FontWeight.bold)),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(20),
+          ),
+          title: const Text(
+            "Ajouter un Appareil",
+            style: TextStyle(fontWeight: FontWeight.bold),
+          ),
           content: SingleChildScrollView(
             child: Column(
               children: [
@@ -233,7 +238,9 @@ class _AppareilPageState extends State<AppareilPage> {
                   controller: _nomController,
                   decoration: InputDecoration(
                     labelText: "Nom de l'Appareil",
-                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
                   ),
                 ),
                 const SizedBox(height: 10),
@@ -241,7 +248,9 @@ class _AppareilPageState extends State<AppareilPage> {
                   controller: _adresseController,
                   decoration: InputDecoration(
                     labelText: "Etat",
-                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
                   ),
                 ),
                 const SizedBox(height: 10),
@@ -249,20 +258,23 @@ class _AppareilPageState extends State<AppareilPage> {
                   value: _selectedIcon,
                   decoration: InputDecoration(
                     labelText: "Icône",
-                    border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.circular(12),
+                    ),
                   ),
-                  items: _icons.map((icon) {
-                    return DropdownMenuItem(
-                      value: icon,
-                      child: Row(
-                        children: [
-                          Icon(icon),
-                          const SizedBox(width: 10),
-                          Text(icon.toString().split('.').last),
-                        ],
-                      ),
-                    );
-                  }).toList(),
+                  items:
+                      _icons.map((icon) {
+                        return DropdownMenuItem(
+                          value: icon,
+                          child: Row(
+                            children: [
+                              Icon(icon),
+                              const SizedBox(width: 10),
+                              Text(icon.toString().split('.').last),
+                            ],
+                          ),
+                        );
+                      }).toList(),
                   onChanged: (icon) {
                     setState(() => _selectedIcon = icon!);
                   },
@@ -278,7 +290,9 @@ class _AppareilPageState extends State<AppareilPage> {
             ElevatedButton(
               style: ElevatedButton.styleFrom(
                 backgroundColor: const Color.fromARGB(255, 61, 14, 214),
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
               ),
               onPressed: () {
                 String nom = _nomController.text;
@@ -334,10 +348,30 @@ class _AppareilPageState extends State<AppareilPage> {
                     mainAxisSpacing: 14,
                     childAspectRatio: 1.1,
                     children: [
-                      _buildDeviceCard("Smart Light", Icons.lightbulb, isLightOn, (v) => setState(() => isLightOn = v)),
-                      _buildDeviceCard("Smart AC", Icons.ac_unit, isAcOn, (v) => setState(() => isAcOn = v)),
-                      _buildDeviceCard("Smart TV", Icons.tv, isTvOn, (v) => setState(() => isTvOn = v)),
-                      _buildDeviceCard("Smart Fan", Icons.toys, isFanOn, (v) => setState(() => isFanOn = v)),
+                      _buildDeviceCard(
+                        "Smart Light",
+                        Icons.lightbulb,
+                        isLightOn,
+                        (v) => setState(() => isLightOn = v),
+                      ),
+                      _buildDeviceCard(
+                        "Smart AC",
+                        Icons.ac_unit,
+                        isAcOn,
+                        (v) => setState(() => isAcOn = v),
+                      ),
+                      _buildDeviceCard(
+                        "Smart TV",
+                        Icons.tv,
+                        isTvOn,
+                        (v) => setState(() => isTvOn = v),
+                      ),
+                      _buildDeviceCard(
+                        "Smart Fan",
+                        Icons.toys,
+                        isFanOn,
+                        (v) => setState(() => isFanOn = v),
+                      ),
                     ],
                   ),
                 ),
@@ -348,7 +382,7 @@ class _AppareilPageState extends State<AppareilPage> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () => _showAddAppareilDialog(context),
-        
+
         child: const Icon(Icons.add, color: Color.fromARGB(255, 107, 12, 12)),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
@@ -363,15 +397,23 @@ class _AppareilPageState extends State<AppareilPage> {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               IconButton(
-                icon: const Icon(Icons.home, color: Color.fromARGB(255, 61, 14, 214)),
+                icon: const Icon(
+                  Icons.home,
+                  color: Color.fromARGB(255, 61, 14, 214),
+                ),
                 onPressed: () {},
               ),
               IconButton(
-                icon: const Icon(Icons.person, color: Color.fromARGB(255, 61, 14, 214)),
+                icon: const Icon(
+                  Icons.person,
+                  color: Color.fromARGB(255, 61, 14, 214),
+                ),
                 onPressed: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => const ProfilePage()),
+                    MaterialPageRoute(
+                      builder: (context) => const ProfilePage(),
+                    ),
                   );
                 },
               ),
@@ -382,7 +424,12 @@ class _AppareilPageState extends State<AppareilPage> {
     );
   }
 
-  Widget _buildDeviceCard(String title, IconData icon, bool isOn, Function(bool) onChanged) {
+  Widget _buildDeviceCard(
+    String title,
+    IconData icon,
+    bool isOn,
+    Function(bool) onChanged,
+  ) {
     return AnimatedContainer(
       duration: const Duration(milliseconds: 300),
       decoration: BoxDecoration(
@@ -399,7 +446,11 @@ class _AppareilPageState extends State<AppareilPage> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(icon, size: 40, color: isOn ? Colors.white : Color.fromARGB(255, 61, 14, 214)),
+          Icon(
+            icon,
+            size: 40,
+            color: isOn ? Colors.white : Color.fromARGB(255, 61, 14, 214),
+          ),
           const SizedBox(height: 10),
           Text(
             title,
@@ -408,11 +459,7 @@ class _AppareilPageState extends State<AppareilPage> {
               fontWeight: FontWeight.w500,
             ),
           ),
-          Switch(
-            value: isOn,
-            onChanged: onChanged,
-            activeColor: Colors.green,
-          ),
+          Switch(value: isOn, onChanged: onChanged, activeColor: Colors.green),
         ],
       ),
     );
@@ -423,7 +470,11 @@ class _AppareilPageState extends State<AppareilPage> {
       padding: const EdgeInsets.only(bottom: 4),
       child: Text(
         "$label : $value",
-        style: const TextStyle(fontSize: 16, color: Colors.black, fontWeight: FontWeight.w400),
+        style: const TextStyle(
+          fontSize: 16,
+          color: Colors.black,
+          fontWeight: FontWeight.w400,
+        ),
       ),
     );
   }

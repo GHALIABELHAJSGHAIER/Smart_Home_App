@@ -274,7 +274,8 @@ class _HomePageState extends State<HomePage> {
     );
   }
 }
-/**
+///////////////////
+/*
  import 'package:clone_spotify_mars/controllers/maison_controller.dart';
 import 'package:clone_spotify_mars/models/maison_model.dart';
 import 'package:flutter/material.dart';
@@ -517,5 +518,4 @@ class _HomePageState extends State<HomePage> {
       },
     );
   }
-}
- */
+}*/
