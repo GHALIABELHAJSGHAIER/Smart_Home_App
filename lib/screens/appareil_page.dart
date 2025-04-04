@@ -348,8 +348,8 @@ class _AppareilPageState extends State<AppareilPage> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () => _showAddAppareilDialog(context),
-        backgroundColor: Color.fromARGB(255, 107, 12, 12),
-        child: const Icon(Icons.add, color: Colors.white),
+        
+        child: const Icon(Icons.add, color: Color.fromARGB(255, 107, 12, 12)),
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       bottomNavigationBar: BottomAppBar(

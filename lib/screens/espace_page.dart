@@ -17,9 +17,9 @@ class EspacePage extends StatelessWidget {
                 decoration: const InputDecoration(labelText: "Nom de l'espace"),
               ),
               const SizedBox(height: 10),
-              TextField(
+              /*TextField(
                 decoration: const InputDecoration(labelText: "Adresse"),
-              ),
+              ),*/
             ],
           ),
           actions: [
