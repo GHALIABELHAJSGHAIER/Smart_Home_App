@@ -7,7 +7,7 @@ import 'package:http/http.dart' as http;
 class MaisonController extends GetxController {
   static MaisonController get instance => Get.find();
 
-   Future<Map<String, dynamic>> createMaison(MaisonModel maison) async {
+  Future<Map<String, dynamic>> createMaison(MaisonModel maison) async {
     var response = await http.post(
       Uri.parse(storeMaison),
       headers: {"Content-Type": "application/json"},
@@ -26,16 +26,21 @@ class MaisonController extends GetxController {
     }
   }
 
-
-
   // Get maison list: GET /maisons/getMaisonsByClientId/:clientId
-  Future<List<MaisonModel>> getMaisonList(String clientId) async {
-    try {
-      var response = await http.get(
-        Uri.parse('$getMaison/$clientId'),
-        headers: {"Content-Type": "application/json"},
-      );
+  Future<List<MaisonModel>> getMaisonList(String id) async {
+    print(id);
+    var response = await http.get(
+      Uri.parse('$getMaison/$id'),
+      /*Uri.parse(
+        'http://10.0.2.2:5000/maisons/getMaisonsByClientId/67eea46ad413b6036625516c',
+      ),*/
+      headers: {"Content-Type": "application/json"},
+    );
 
+    print("$getMaison/${id}");
+
+    //print(response);
+    try {
       if (response.statusCode == 200) {
         var jsonResponse = jsonDecode(response.body);
 

@@ -203,6 +203,7 @@ class _SigninPageState extends State<SigninPage> {
                                   var result = await controller
                                       .signinController(user);
                                   if (result['status'] == true) {
+                                    print("response Token: ${result['token']}");
                                     var mytoken = result['token'];
                                     prefs.setString('token', mytoken);
                                     print("Stored Token: $mytoken");

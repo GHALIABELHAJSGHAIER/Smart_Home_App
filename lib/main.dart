@@ -11,6 +11,7 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   SharedPreferences prefs = await SharedPreferences.getInstance();
   String? token = prefs.getString('token');
+  print(" MAIN ..TOKEN = ${token}");
   runApp(MyApp(token: token));
 }
 
@@ -28,7 +29,7 @@ class MyApp extends StatelessWidget {
               ? HomePage(token: token!)
               //: AppareilPage(),
               : WelcomeScreen(),
-              //: EspacePage(),
+      //: EspacePage(),
     );
   }
 }

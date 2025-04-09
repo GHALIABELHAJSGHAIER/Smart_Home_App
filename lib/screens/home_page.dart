@@ -10,6 +10,7 @@ import '../models/maison_model.dart';
 import '../screens/signin_page.dart';
 
 class HomePage extends StatefulWidget {
+  //dima n7awiss bih 
   const HomePage({super.key, required this.token});
   final String token;
 
@@ -24,7 +25,6 @@ class _HomePageState extends State<HomePage> {
   late SharedPreferences prefs;
   late List<MaisonModel> items = [];
 
-  late String email;
   late String clientId;
 
   void initSharedPref() async {
@@ -33,6 +33,9 @@ class _HomePageState extends State<HomePage> {
 
   Future<void> _loadMaisonList() async {
     List<MaisonModel> fetchedItems = await controller.getMaisonList(clientId);
+    /*List<MaisonModel> fetchedItems = await controller.getMaisonList(
+      "67eea46ad413b6036625516c",
+    );*/
     setState(() {
       items = fetchedItems;
     });
@@ -42,14 +45,13 @@ class _HomePageState extends State<HomePage> {
   void initState() {
     _nameController = TextEditingController();
     _addressController = TextEditingController();
-    try {
-      Map<String, dynamic> jwtDecodedToken = JwtDecoder.decode(widget.token);
-      email = jwtDecodedToken['email']?.toString() ?? '';
-      clientId = jwtDecodedToken['_id']?.toString() ?? '';
-    } catch (e) {
-      email = '';
-      clientId = '';
-    }
+
+    Map<String, dynamic> jwtDecodedToken = JwtDecoder.decode(widget.token);
+    print("TOKEN = ${widget.token}");
+    print("Userid = ${jwtDecodedToken['id']}");
+    //email = jwtDecodedToken['email']?.toString() ?? '';
+    clientId = jwtDecodedToken['id'];
+
     _loadMaisonList();
     initSharedPref();
     super.initState();
@@ -139,7 +141,10 @@ class _HomePageState extends State<HomePage> {
           centerTitle: true,
           actions: <Widget>[
             IconButton(
-              icon: const Icon(Icons.logout_outlined, color: Color.fromARGB(255, 61, 14, 214)),
+              icon: const Icon(
+                Icons.logout_outlined,
+                color: Color.fromARGB(255, 61, 14, 214),
+              ),
               onPressed: () async {
                 await prefs.remove('token');
                 Navigator.pushAndRemoveUntil(
@@ -181,6 +186,9 @@ class _HomePageState extends State<HomePage> {
                   : Expanded(
                     child: FutureBuilder<List<MaisonModel>>(
                       future: controller.getMaisonList(clientId),
+                      /*future: controller.getMaisonList(
+                        "67eea46ad413b6036625516c",
+                      ),*/
                       builder: (context, snapshot) {
                         if (snapshot.hasData) {
                           return ListView.builder(
@@ -243,14 +251,20 @@ class _HomePageState extends State<HomePage> {
             mainAxisAlignment: MainAxisAlignment.spaceAround,
             children: [
               IconButton(
-                icon: const Icon(Icons.home, color: Color.fromARGB(255, 61, 14, 214)),
+                icon: const Icon(
+                  Icons.home,
+                  color: Color.fromARGB(255, 61, 14, 214),
+                ),
                 onPressed: () {
                   // Action pour Home
                 },
               ),
               const SizedBox(width: 40), // Espace pour le FloatingActionButton
               IconButton(
-                icon: const Icon(Icons.person, color: Color.fromARGB(255, 61, 14, 214)),
+                icon: const Icon(
+                  Icons.person,
+                  color: Color.fromARGB(255, 61, 14, 214),
+                ),
                 onPressed: () {
                   // Action pour Profil
                   // Naviguer vers la page ProfilePage
@@ -274,6 +288,7 @@ class _HomePageState extends State<HomePage> {
     );
   }
 }
+
 ///////////////////
 /*
  import 'package:clone_spotify_mars/controllers/maison_controller.dart';
