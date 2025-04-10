@@ -1,7 +1,6 @@
 import 'dart:convert';
 // ignore: depend_on_referenced_packages
 import 'package:get/get.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import '../models/user_model.dart';
 import '../config.dart';
 import 'package:http/http.dart' as http;

@@ -17,7 +17,7 @@ class TodoController extends GetxController {
   // }
   Future<Map<String, dynamic>> createTodo(TodoModel todo) async {
     var response = await http.post(
-      Uri.parse(storeTodo),
+      Uri.parse(storeMaison),
       headers: {"Content-Type": "application/json"},
       body: jsonEncode(todo.toJson()),
     );
@@ -37,7 +37,7 @@ class TodoController extends GetxController {
   // Get todo list : "http://localhost:5000/todo/getUserTodoList/{user id}"
   Future<List<TodoModel>> getTodoList(String userId) async {
     var response = await http.get(
-      Uri.parse('$getTodo/$userId'),
+      Uri.parse('$storeMaison/$userId'),
       headers: {"Content-Type": "application/json"},
     );
 
@@ -58,7 +58,7 @@ class TodoController extends GetxController {
   //Delete todo : http://localhost:5000/todo/deleteTodo/{id Todo}
   Future<bool> deleteTodo(String id) async {
     var response = await http.delete(
-      Uri.parse('$deleteTodoItem/$id'),
+      Uri.parse('$storeMaison/$id'),
       headers: {"Content-Type": "application/json"},
     );
     var jsonResponse = jsonDecode(response.body);

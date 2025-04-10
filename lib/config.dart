@@ -4,14 +4,11 @@ const url = 'http://10.0.2.2:5000/';
 const register = "${url}users/addUserClient/";
 const login = "${url}users/login";
 const getuserbyid = "${url}users/getUserById";
-//Todo
-const storeTodo = "${url}todo/storeTodo";
-const getTodo = "${url}todo/getUserTodoList";
-const deleteTodoItem = "${url}todo/deleteTodo";
+
 //maison
-const storeMaison = "${url}maisons/addMaisonForClient/";
+const storeMaison = "${url}maisons/addMaisonForClient";
 const getMaison = "${url}maisons/getMaisonsByClientId";
-const deleteMaison = "${url}maisons/deleteMaisonById";
+const deletemaison = "${url}maisons/deleteMaisonById";
 
 //espace
 const addEspace = "${url}espaces/addEspaceForMaison";

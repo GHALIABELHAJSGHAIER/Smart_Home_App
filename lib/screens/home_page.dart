@@ -4,7 +4,6 @@ import 'package:get/get.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:uuid/uuid.dart';
-
 import '../controllers/maison_controller.dart';
 import '../models/maison_model.dart';
 import '../screens/signin_page.dart';
@@ -53,7 +52,7 @@ class _HomePageState extends State<HomePage> {
     print("TOKEN = ${widget.token}");
     print(jwtDecodedToken);
     print("Userid = ${jwtDecodedToken['id']}");
-   //email = jwtDecodedToken['email']?.toString() ?? '';
+    //email = jwtDecodedToken['email']?.toString() ?? '';
     clientId = jwtDecodedToken['id'];
 
     _loadMaisonList();
@@ -117,9 +116,9 @@ class _HomePageState extends State<HomePage> {
                     _addressController.clear();
                     Navigator.pop(context);
                   } else {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text("Échec de l'ajout")),
-                    );
+                    ScaffoldMessenger.of(
+                      context,
+                    ).showSnackBar(const SnackBar(content: Text("Ajouter")));
                   }
                 }
               },
@@ -199,7 +198,7 @@ class _HomePageState extends State<HomePage> {
                             itemCount: snapshot.data!.length,
                             itemBuilder:
                                 (context, index) => ListTile(
-                                  leading: Image.asset("assets/logo.png"),
+                                  leading: Image.asset("assets/maison.png"),
                                   title: Text(snapshot.data![index].name!),
                                   subtitle: Text(
                                     snapshot.data![index].address!,

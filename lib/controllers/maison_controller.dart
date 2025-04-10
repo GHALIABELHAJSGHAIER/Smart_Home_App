@@ -59,13 +59,22 @@ class MaisonController extends GetxController {
     }
   }
 
+  /*Future<bool> deleteMaison(String id) async {
+    var response = await http.delete(
+      Uri.parse('$deleteMaison/$id'),
+      headers: {"Content-Type": "application/json"},
+    );
+    var jsonResponse = jsonDecode(response.body);
+    return jsonResponse['status'];
+  }*/
   // Delete maison: DELETE /maisons/deleteMaisonById/:id
   Future<bool> deleteMaison(String id) async {
     try {
       var response = await http.delete(
-        Uri.parse('$deleteMaison/$id'),
+        Uri.parse('$deletemaison/$id'),
         headers: {"Content-Type": "application/json"},
       );
+      print("$deletemaison/${id}");
 
       if (response.statusCode == 200) {
         var jsonResponse = jsonDecode(response.body);
