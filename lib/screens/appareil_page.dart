@@ -412,7 +412,7 @@ class _AppareilPageState extends State<AppareilPage> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => const ProfilePage(),
+                      builder: (context) => const ProfilePage(token: 'token',),
                     ),
                   );
                 },

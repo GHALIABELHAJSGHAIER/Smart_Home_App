@@ -190,7 +190,9 @@ class _EspacePageState extends State<EspacePage> {
               onPressed: () {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => const ProfilePage()),
+                  MaterialPageRoute(
+                    builder: (context) => const ProfilePage(token: 'token'),
+                  ),
                 );
               },
             ),

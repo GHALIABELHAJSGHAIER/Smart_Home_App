@@ -22,7 +22,7 @@ class AuthController extends GetxController {
       var myToken = jsonResponse['token'];
       return {
         "status": true,
-        "success": "User Registered Successfully",
+        "success": "User connecter Successfully",
         "token": myToken,
       };
     } else {
@@ -34,9 +34,7 @@ class AuthController extends GetxController {
   }
 
   Future<Map<String, dynamic>> signupController(UserModel user) async {
-    print(
-      "Username: ${user.username}",
-    ); // Ajoutez cette ligne pour vérifier que username n'est pas vide
+    // Ajoutez cette ligne pour vérifier que username n'est pas vide
 
     var response = await http.post(
       Uri.parse(register),
@@ -46,24 +44,39 @@ class AuthController extends GetxController {
     var jsonResponse = jsonDecode(response.body);
 
     if (jsonResponse['status'] == true) {
-      // Sauvegarder les informations dans SharedPreferences après une inscription réussie
-      SharedPreferences prefs = await SharedPreferences.getInstance();
-      await prefs.setString(
-        'username',
-        user.username ?? '',
-      ); // Sauvegarder le username
-      await prefs.setString('email', user.email ?? '');
-      await prefs.setString(
-        'password',
-        user.password ?? '',
-      ); // Il est préférable d'éviter de stocker le mot de passe pour des raisons de sécurité
-      print('Username stored: ${user.username}'); // Affichez ce qui est stocké
       return {"status": true, "success": "User Registered Successfully"};
     } else {
       return {
         "status": false,
         "error": jsonResponse['message'] ?? "Registration Failed",
       };
+    }
+  }
+
+  Future<List<UserModel>> getUserById(String id) async {
+    try {
+      // Faire la requête GET à l'API
+      var response = await http.get(
+        Uri.parse('$getuserbyid/$id'),
+        headers: {"Content-Type": "application/json"},
+      );
+      print("Réponse du backend : ${response.body}");
+      // Vérifier si la requête a réussitry {
+      if (response.statusCode == 200) {
+        var jsonResponse = jsonDecode(response.body);
+
+        if (jsonResponse['status'] == true) {
+          return (jsonResponse['success'] as List)
+              .map((user) => UserModel.fromJson(user))
+              .toList();
+        } else {
+          return [];
+        }
+      } else {
+        throw Exception("Failed to load data: ${response.statusCode}");
+      }
+    } catch (e) {
+      return [];
     }
   }
 }
