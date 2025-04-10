@@ -9,6 +9,7 @@ const getuserbyid = "${url}users/getUserById";
 const storeMaison = "${url}maisons/addMaisonForClient";
 const getMaison = "${url}maisons/getMaisonsByClientId";
 const deletemaison = "${url}maisons/deleteMaisonById";
+const updatemaison = "${url}maisons/updateMaison";
 
 //espace
 const addEspace = "${url}espaces/addEspaceForMaison";

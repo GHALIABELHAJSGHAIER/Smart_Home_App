@@ -9,7 +9,6 @@ import '../models/maison_model.dart';
 import '../screens/signin_page.dart';
 
 class HomePage extends StatefulWidget {
-  //dima n7awiss bih
   const HomePage({super.key, required this.token});
   final String token;
 
@@ -24,7 +23,6 @@ class _HomePageState extends State<HomePage> {
   late SharedPreferences prefs;
   late GlobalKey<FormState> _formkey;
   late List<MaisonModel> items = [];
-
   late String clientId;
 
   void initSharedPref() async {
@@ -33,9 +31,6 @@ class _HomePageState extends State<HomePage> {
 
   Future<void> _loadMaisonList() async {
     List<MaisonModel> fetchedItems = await controller.getMaisonList(clientId);
-    /*List<MaisonModel> fetchedItems = await controller.getMaisonList(
-      "67eea46ad413b6036625516c",
-    );*/
     setState(() {
       items = fetchedItems;
     });
@@ -48,11 +43,6 @@ class _HomePageState extends State<HomePage> {
     _formkey = GlobalKey<FormState>();
 
     Map<String, dynamic> jwtDecodedToken = JwtDecoder.decode(widget.token);
-
-    print("TOKEN = ${widget.token}");
-    print(jwtDecodedToken);
-    print("Userid = ${jwtDecodedToken['id']}");
-    //email = jwtDecodedToken['email']?.toString() ?? '';
     clientId = jwtDecodedToken['id'];
 
     _loadMaisonList();
@@ -68,8 +58,10 @@ class _HomePageState extends State<HomePage> {
     super.dispose();
   }
 
-  // Fonction pour afficher le formulaire d'ajout
   Future<void> _showAddMaisonDialog() async {
+    _nameController.clear();
+    _addressController.clear();
+
     return showDialog(
       context: context,
       builder: (context) {
@@ -93,9 +85,7 @@ class _HomePageState extends State<HomePage> {
           ),
           actions: [
             TextButton(
-              onPressed: () {
-                Navigator.pop(context);
-              },
+              onPressed: () => Navigator.pop(context),
               child: const Text("Annuler"),
             ),
             ElevatedButton(
@@ -111,18 +101,77 @@ class _HomePageState extends State<HomePage> {
 
                   var result = await controller.createMaison(maison);
                   if (result['success'] == true) {
-                    _loadMaisonList(); // Recharger la liste après ajout
-                    _nameController.clear();
-                    _addressController.clear();
+                    _loadMaisonList();
                     Navigator.pop(context);
                   } else {
-                    ScaffoldMessenger.of(
-                      context,
-                    ).showSnackBar(const SnackBar(content: Text("Ajouter")));
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(content: Text("Erreur lors de l'ajout")),
+                    );
                   }
                 }
               },
               child: const Text("Ajouter"),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  Future<void> _showUpdateMaisonDialog(MaisonModel maison) async {
+    _nameController.text = maison.name ?? '';
+    _addressController.text = maison.address ?? '';
+
+    return showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text("Modifier la Maison"),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              TextField(
+                controller: _nameController,
+                decoration: const InputDecoration(
+                  labelText: "Nom de la maison",
+                ),
+              ),
+              const SizedBox(height: 10),
+              TextField(
+                controller: _addressController,
+                decoration: const InputDecoration(labelText: "Adresse"),
+              ),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text("Annuler"),
+            ),
+            ElevatedButton(
+              onPressed: () async {
+                if (_nameController.text.isNotEmpty &&
+                    _addressController.text.isNotEmpty) {
+                  maison.name = _nameController.text;
+                  maison.address = _addressController.text;
+
+                  var result = await controller.updateMaison(
+                    maison.id!,
+                    maison,
+                  );
+                  if (result['success'] == true) {
+                    _loadMaisonList();
+                    Navigator.pop(context);
+                  } else {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text("Erreur lors de la modification"),
+                      ),
+                    );
+                  }
+                }
+              },
+              child: const Text("Modifier"),
             ),
           ],
         );
@@ -142,7 +191,7 @@ class _HomePageState extends State<HomePage> {
             style: TextStyle(fontSize: 24, fontWeight: FontWeight.w400),
           ),
           centerTitle: true,
-          actions: <Widget>[
+          actions: [
             IconButton(
               icon: const Icon(
                 Icons.logout_outlined,
@@ -152,8 +201,8 @@ class _HomePageState extends State<HomePage> {
                 await prefs.remove('token');
                 Navigator.pushAndRemoveUntil(
                   context,
-                  MaterialPageRoute(builder: (context) => SigninPage()),
-                  (Route<dynamic> route) => false,
+                  MaterialPageRoute(builder: (_) => const SigninPage()),
+                  (_) => false,
                 );
               },
             ),
@@ -173,13 +222,11 @@ class _HomePageState extends State<HomePage> {
             children: [
               Center(child: Image.asset("assets/logo_text.png")),
               const SizedBox(height: 10),
-
-              // Afficher la liste ou un message si vide
               items.isEmpty
                   ? const Center(
                     child: Text(
-                      textAlign: TextAlign.center,
                       "No Data \n Add New Task",
+                      textAlign: TextAlign.center,
                       style: TextStyle(
                         fontSize: 20,
                         fontWeight: FontWeight.bold,
@@ -189,52 +236,60 @@ class _HomePageState extends State<HomePage> {
                   : Expanded(
                     child: FutureBuilder<List<MaisonModel>>(
                       future: controller.getMaisonList(clientId),
-                      /*future: controller.getMaisonList(
-                        "67eea46ad413b6036625516c",
-                      ),*/
                       builder: (context, snapshot) {
-                        if (snapshot.hasData) {
-                          return ListView.builder(
-                            itemCount: snapshot.data!.length,
-                            itemBuilder:
-                                (context, index) => ListTile(
-                                  leading: Image.asset("assets/maison.png"),
-                                  title: Text(snapshot.data![index].name!),
-                                  subtitle: Text(
-                                    snapshot.data![index].address!,
-                                  ),
-                                  trailing: IconButton(
-                                    onPressed: () async {
-                                      print(
-                                        "Delete item ${snapshot.data![index].id!}",
-                                      );
-                                      var result = await controller
-                                          .deleteMaison(
-                                            snapshot.data![index].id!,
-                                          );
-                                      if (result) {
-                                        _loadMaisonList();
-                                      } else {
-                                        ScaffoldMessenger.of(
-                                          context,
-                                        ).showSnackBar(
-                                          const SnackBar(
-                                            content: Text("Failed to delete"),
-                                          ),
-                                        );
-                                      }
-                                    },
-                                    icon: const Icon(
-                                      Icons.delete,
-                                      color: Colors.red,
-                                    ),
-                                  ),
-                                ),
-                          );
-                        } else if (snapshot.connectionState ==
+                        if (snapshot.connectionState ==
                             ConnectionState.waiting) {
                           return const Center(
                             child: CircularProgressIndicator(),
+                          );
+                        } else if (snapshot.hasData) {
+                          return ListView.builder(
+                            itemCount: snapshot.data!.length,
+                            itemBuilder: (context, index) {
+                              var maison = snapshot.data![index];
+                              return ListTile(
+                                leading: Image.asset("assets/maison.png"),
+                                title: Text(maison.name ?? ''),
+                                subtitle: Text(maison.address ?? ''),
+                                trailing: Wrap(
+                                  spacing: 10,
+                                  children: [
+                                    IconButton(
+                                      icon: const Icon(
+                                        Icons.edit,
+                                        color: Colors.orange,
+                                      ),
+                                      onPressed: () {
+                                        _showUpdateMaisonDialog(maison);
+                                      },
+                                    ),
+                                    IconButton(
+                                      icon: const Icon(
+                                        Icons.delete,
+                                        color: Colors.red,
+                                      ),
+                                      onPressed: () async {
+                                        var result = await controller
+                                            .deleteMaison(maison.id!);
+                                        if (result) {
+                                          _loadMaisonList();
+                                        } else {
+                                          ScaffoldMessenger.of(
+                                            context,
+                                          ).showSnackBar(
+                                            const SnackBar(
+                                              content: Text(
+                                                "Échec de la suppression",
+                                              ),
+                                            ),
+                                          );
+                                        }
+                                      },
+                                    ),
+                                  ],
+                                ),
+                              );
+                            },
                           );
                         } else {
                           return const Center(
@@ -258,36 +313,19 @@ class _HomePageState extends State<HomePage> {
                   Icons.home,
                   color: Color.fromARGB(255, 61, 14, 214),
                 ),
-                onPressed: () {
-                  // Action pour Home
-                },
+                onPressed: () {},
               ),
-              const SizedBox(width: 40), // Espace pour le FloatingActionButton
+              const SizedBox(width: 40),
               IconButton(
                 icon: const Icon(
                   Icons.person,
                   color: Color.fromARGB(255, 61, 14, 214),
                 ),
                 onPressed: () {
-                  // Décoder le token pour obtenir l'ID de l'utilisateur
-                  Map<String, dynamic> jwtDecodedToken = JwtDecoder.decode(
-                    widget.token,
-                  );
-                  String userId = jwtDecodedToken['id'];
-                  print("Token Home vers Profile = ");
-                  print(widget.token);
-
-                  // Naviguer vers la page ProfilePage avec le token
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder:
-                          (context) => ProfilePage(
-                            token:
-                                widget
-                                    .token, // Passez le token complet à la page ProfilePage
-                            //userId: userId,       // Passez l'ID de l'utilisateur à la page ProfilePage
-                          ),
+                      builder: (_) => ProfilePage(token: widget.token),
                     ),
                   );
                 },
@@ -296,7 +334,7 @@ class _HomePageState extends State<HomePage> {
           ),
         ),
         floatingActionButton: FloatingActionButton(
-          onPressed: _showAddMaisonDialog, // Ouvre la boîte de dialogue d'ajout
+          onPressed: _showAddMaisonDialog,
           child: const Icon(Icons.add, color: Color.fromARGB(255, 107, 12, 12)),
         ),
         floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
