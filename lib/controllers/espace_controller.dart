@@ -5,25 +5,23 @@ import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 
 class EspaceController extends GetxController {
-  // Ajouter un espace pour une maison
-  Future<Map<String, dynamic>> addEspaceForMaison(String maisonId, String nom) async {
+  // Ajouter un espace pour une espace
+  Future<Map<String, dynamic>> createEspaceForMaison(EspaceModel espace) async {
     final response = await http.post(
       Uri.parse(addEspace),
       headers: {'Content-Type': 'application/json'},
-      body: jsonEncode({'maisonId': maisonId, 'nom': nom}),
+      body: jsonEncode(espace.toJson()),
     );
 
     final data = jsonDecode(response.body);
     if (response.statusCode == 200 && data['status'] == true) {
       return {'success': true, 'data': data['success']};
     } else {
-      return {'success': false, 'message': data['message'] ?? 'Erreur inconnue'};
+      return {
+        'success': false,
+        'message': data['message'] ?? 'Erreur inconnue',
+      };
     }
-  }
-
-  // Méthode publique pour créer un espace à partir d’un EspaceModel
-  Future<Map<String, dynamic>> createEspace(EspaceModel espace) async {
-    return await addEspaceForMaison(espace.maisonId, espace.nom);
   }
 
   // Obtenir tous les espaces d'une maison
@@ -34,46 +32,98 @@ class EspaceController extends GetxController {
     if (response.statusCode == 200 && data['status'] == true) {
       return {'success': true, 'data': data['success']};
     } else {
-      return {'success': false, 'message': data['message'] ?? 'Erreur inconnue'};
+      return {
+        'success': false,
+        'message': data['message'] ?? 'Erreur inconnue',
+      };
     }
   }
 
   // Méthode publique qui retourne une liste d’EspaceModel
-  Future<List<EspaceModel>> getEspaces(String maisonId) async {
-    final response = await getAllEspacesByMaisonId(maisonId);
-    if (response['success']) {
-      List<dynamic> data = response['data'];
-      return data.map((e) => EspaceModel.fromJson(e)).toList();
-    } else {
+
+  Future<List<EspaceModel>> getEspaces(String id) async {
+    print(id);
+    var response = await http.get(
+      Uri.parse('$getEspace/$id'),
+      /*Uri.parse(
+        'http://10.0.2.2:5000/espaces/getEspace/67eea46ad413b6036625516c',
+      ),*/
+      headers: {"Content-Type": "application/json"},
+    );
+
+    print("$getEspace/${id}");
+
+    try {
+      if (response.statusCode == 200) {
+        var jsonResponse = jsonDecode(response.body);
+
+        if (jsonResponse['status'] == true) {
+          return (jsonResponse['success'] as List)
+              .map((espace) => EspaceModel.fromJson(espace))
+              .toList();
+        } else {
+          return [];
+        }
+      } else {
+        throw Exception("Failed to load data: ${response.statusCode}");
+      }
+    } catch (e) {
       return [];
     }
   }
 
   // Supprimer un espace
-  Future<Map<String, dynamic>> deleteEspace(String id) async {
+  /*Future<Map<String, dynamic>> deleteEspace(String id) async {
     final response = await http.delete(Uri.parse('$deleteEspace/$id'));
 
     final data = jsonDecode(response.body);
     if (response.statusCode == 200 && data['status'] == true) {
       return {'success': true, 'message': data['success']};
     } else {
-      return {'success': false, 'message': data['message'] ?? 'Erreur inconnue'};
+      return {
+        'success': false,
+        'message': data['message'] ?? 'Erreur inconnue',
+      };
+    }
+  }*/
+   Future<bool> deleteEspace(String id) async {
+    try {
+      var response = await http.delete(
+        Uri.parse('$deleteEspace/$id'),
+        headers: {"Content-Type": "application/json"},
+      );
+      print("$deleteEspace/${id}");
+
+      if (response.statusCode == 200) {
+        var jsonResponse = jsonDecode(response.body);
+        return jsonResponse['status'];
+      } else {
+        throw Exception("Failed to delete espace: ${response.statusCode}");
+      }
+    } catch (e) {
+      return false;
     }
   }
 
   // Mettre à jour un espace
-  Future<Map<String, dynamic>> updateEspace(String id, String nom) async {
+  Future<Map<String, dynamic>> updateEspace(
+    String id,
+    EspaceModel espace,
+  ) async {
     final response = await http.put(
       Uri.parse('$updateEspace/$id'),
       headers: {'Content-Type': 'application/json'},
-      body: jsonEncode({'nom': nom}),
+      body: jsonEncode(espace.toJson()),
     );
 
     final data = jsonDecode(response.body);
     if (response.statusCode == 200 && data['status'] == true) {
       return {'success': true, 'data': data['success']};
     } else {
-      return {'success': false, 'message': data['message'] ?? 'Erreur inconnue'};
+      return {
+        'success': false,
+        'message': data['message'] ?? 'Erreur inconnue',
+      };
     }
   }
 }

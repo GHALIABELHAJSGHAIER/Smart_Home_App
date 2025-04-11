@@ -1,5 +1,8 @@
+import 'package:clone_spotify_mars/bottomappbar_page.dart';
+import 'package:clone_spotify_mars/screens/signin_page.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:jwt_decoder/jwt_decoder.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:uuid/uuid.dart';
 
@@ -8,8 +11,8 @@ import '../models/espace_model.dart';
 import 'profile_page.dart';
 
 class EspacePage extends StatefulWidget {
-  const EspacePage({Key? key}) : super(key: key);
-
+  const EspacePage({super.key, required this.token});
+  final String token;
   @override
   State<EspacePage> createState() => _EspacePageState();
 }
@@ -18,20 +21,17 @@ class _EspacePageState extends State<EspacePage> {
   final controller = Get.put(EspaceController());
   late TextEditingController _nameController;
   late SharedPreferences prefs;
+  late GlobalKey<FormState> _formkey;
   late List<EspaceModel> espaces = [];
-  late String maisonId = "";
+  late String maisonId;
 
-  @override
-  void initState() {
-    _nameController = TextEditingController();
-    _initPrefs();
-    super.initState();
-  }
-
+  /*void initSharedPref() async {
+    prefs = await SharedPreferences.getInstance();
+  }*/
   Future<void> _initPrefs() async {
     prefs = await SharedPreferences.getInstance();
     setState(() {
-      maisonId = prefs.getString("maisonId") ?? "";
+      maisonId = prefs.getString("maisonId")!;
     });
     _loadEspaces();
   }
@@ -44,21 +44,42 @@ class _EspacePageState extends State<EspacePage> {
   }
 
   @override
+  void initState() {
+    _nameController = TextEditingController();
+    _formkey = GlobalKey<FormState>();
+
+    /*Map<String, dynamic> jwtDecodedToken = JwtDecoder.decode(widget.token);
+    maisonId = jwtDecodedToken['id'];*/
+    _loadEspaces();
+    _initPrefs();
+    super.initState();
+  }
+
+  @override
   void dispose() {
     _nameController.dispose();
     controller.dispose();
     super.dispose();
   }
 
-  Future<void> _showAddEspaceDialog(BuildContext context) async {
+  Future<void> _showAddEspaceDialog() async {
+    _nameController.clear();
+
     return showDialog(
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: const Text("Ajouter un espace"),
-          content: TextField(
-            controller: _nameController,
-            decoration: const InputDecoration(labelText: "Nom de l'espace"),
+          title: const Text("Ajouter une Maison"),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              TextField(
+                controller: _nameController,
+                decoration: const InputDecoration(
+                  labelText: "Nom de la Espace",
+                ),
+              ),
+            ],
           ),
           actions: [
             TextButton(
@@ -67,22 +88,22 @@ class _EspacePageState extends State<EspacePage> {
             ),
             ElevatedButton(
               onPressed: () async {
-                final espace = EspaceModel(
-                  id: const Uuid().v4(),
-                  maisonId: maisonId,
-                  nom: _nameController.text,
-                );
-                var result = await controller.createEspace(espace);
-                if (result["status"] == true) {
-                  _loadEspaces();
-                  _nameController.clear();
-                  Navigator.pop(context);
-                } else {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text(result['error'] ?? "Échec de l'ajout"),
-                    ),
+                if (_nameController.text.isNotEmpty) {
+                  var espace = EspaceModel(
+                    id: const Uuid().v4(),
+                    nom: _nameController.text,
+                    maisonId: maisonId,
                   );
+
+                  var result = await controller.createEspaceForMaison(espace);
+                  if (result['success'] == true) {
+                    _loadEspaces();
+                    Navigator.pop(context);
+                  } else {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(content: Text("Erreur lors de l'ajout")),
+                    );
+                  }
                 }
               },
               child: const Text("Ajouter"),
@@ -93,116 +114,195 @@ class _EspacePageState extends State<EspacePage> {
     );
   }
 
+  Future<void> _showUpdateEspaceDialog(EspaceModel espace) async {
+    _nameController.clear();
+
+    return showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text("Modifier la Espace"),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              TextField(
+                controller: _nameController,
+                decoration: const InputDecoration(
+                  labelText: "Nom de la espace",
+                ),
+              ),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text("Annuler"),
+            ),
+            ElevatedButton(
+              onPressed: () async {
+                if (_nameController.text.isNotEmpty) {
+                  espace.nom = _nameController.text;
+
+                  var result = await controller.updateEspace(
+                    espace.id!,
+                    espace,
+                  );
+                  if (result['success'] == true) {
+                    _loadEspaces();
+                    Navigator.pop(context);
+                  } else {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text("Erreur lors de la modification"),
+                      ),
+                    );
+                  }
+                }
+              },
+              child: const Text("Modifier"),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        foregroundColor: Colors.black,
-        backgroundColor: Colors.white,
-        title: const Text(
-          "Liste Espaces",
-          style: TextStyle(fontSize: 24, fontWeight: FontWeight.w400),
-        ),
-        centerTitle: true,
-      ),
-      body: Container(
-        padding: const EdgeInsets.all(10),
-        width: double.infinity,
-        height: double.infinity,
-        decoration: const BoxDecoration(
-          image: DecorationImage(
-            image: AssetImage("assets/background.png"),
-            fit: BoxFit.cover,
+    return SafeArea(
+      child: Scaffold(
+        appBar: AppBar(
+          foregroundColor: Colors.black,
+          backgroundColor: Colors.white,
+          title: const Text(
+            "Home Page",
+            style: TextStyle(fontSize: 24, fontWeight: FontWeight.w400),
           ),
-        ),
-        child: Column(
-          children: [
-            Center(child: Image.asset("assets/logo_text.png")),
-            const SizedBox(height: 10),
-            espaces.isEmpty
-                ? const Expanded(
-                  child: Center(
-                    child: Text(
-                      "Aucun espace ajouté",
-                      style: TextStyle(
-                        fontSize: 18,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ),
-                )
-                : Expanded(
-                  child: ListView.builder(
-                    itemCount: espaces.length,
-                    itemBuilder: (context, index) {
-                      return ListTile(
-                        leading: Image.asset("assets/logo.png"),
-                        title: Text(espaces[index].nom),
-                        trailing: IconButton(
-                          icon: const Icon(Icons.delete, color: Colors.red),
-                          onPressed: () async {
-                            var result = await controller.deleteEspace(
-                              espaces[index].id,
-                            );
-                            bool deleted =
-                                result['status'] ??
-                                false; // Récupère le status comme booléen
-                            if (deleted) {
-                              _loadEspaces();
-                            } else {
-                              ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
-                                  content: Text("Suppression échouée"),
-                                ),
-                              );
-                            }
-                          },
-                        ),
-                      );
-                    },
-                  ),
-                ),
-          ],
-        ),
-      ),
-      bottomNavigationBar: BottomAppBar(
-        shape: const CircularNotchedRectangle(),
-        notchMargin: 8.0,
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceAround,
-          children: [
+          centerTitle: true,
+          actions: [
             IconButton(
               icon: const Icon(
-                Icons.home,
+                Icons.logout_outlined,
                 color: Color.fromARGB(255, 61, 14, 214),
               ),
-              onPressed: () {
-                // Aller vers Accueil
-              },
-            ),
-            const SizedBox(width: 40),
-            IconButton(
-              icon: const Icon(
-                Icons.person,
-                color: Color.fromARGB(255, 61, 14, 214),
-              ),
-              onPressed: () {
-                Navigator.push(
+              onPressed: () async {
+                await prefs.remove('token');
+                Navigator.pushAndRemoveUntil(
                   context,
-                  MaterialPageRoute(
-                    builder: (context) => const ProfilePage(token: 'token'),
-                  ),
+                  MaterialPageRoute(builder: (_) => const SigninPage()),
+                  (_) => false,
                 );
               },
             ),
           ],
         ),
+        body: Container(
+          padding: const EdgeInsets.all(10),
+          width: double.infinity,
+          height: double.infinity,
+          decoration: const BoxDecoration(
+            image: DecorationImage(
+              image: AssetImage("assets/background.png"),
+              fit: BoxFit.cover,
+            ),
+          ),
+          child: Column(
+            children: [
+              Center(child: Image.asset("assets/logo_text.png")),
+              const SizedBox(height: 10),
+              espaces.isEmpty
+                  ? const Center(
+                    child: Text(
+                      "No Data \n Add New Task",
+                      textAlign: TextAlign.center,
+                      style: TextStyle(
+                        fontSize: 20,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  )
+                  : Expanded(
+                    child: FutureBuilder<List<EspaceModel>>(
+                      future: controller.getEspaces(maisonId),
+                      builder: (context, snapshot) {
+                        if (snapshot.connectionState ==
+                            ConnectionState.waiting) {
+                          return const Center(
+                            child: CircularProgressIndicator(),
+                          );
+                        } else if (snapshot.hasData) {
+                          return ListView.builder(
+                            itemCount: snapshot.data!.length,
+                            itemBuilder: (context, index) {
+                              var espace = snapshot.data![index];
+                              return ListTile(
+                                leading: CircleAvatar(
+                                  radius: 40, // Taille de l'image
+                                  backgroundImage: AssetImage(
+                                    "assets/maison.png",
+                                  ),
+                                  backgroundColor: Colors.transparent,
+                                ),
+                                title: Text(espace.nom),
+                                trailing: Wrap(
+                                  spacing: 10,
+                                  children: [
+                                    IconButton(
+                                      icon: const Icon(
+                                        Icons.edit,
+                                        color: Colors.orange,
+                                      ),
+                                      onPressed: () {
+                                        _showUpdateEspaceDialog(espace);
+                                      },
+                                    ),
+                                    IconButton(
+                                      icon: const Icon(
+                                        Icons.delete,
+                                        color: Colors.red,
+                                      ),
+                                      onPressed: () async {
+                                        var result = await controller
+                                            .deleteEspace(espace.id!);
+                                        if (result) {
+                                          _loadEspaces();
+                                        } else {
+                                          ScaffoldMessenger.of(
+                                            context,
+                                          ).showSnackBar(
+                                            const SnackBar(
+                                              content: Text(
+                                                "Échec de la suppression",
+                                              ),
+                                            ),
+                                          );
+                                        }
+                                      },
+                                    ),
+                                  ],
+                                ),
+                              );
+                            },
+                          );
+                        } else {
+                          return const Center(
+                            child: Text("Failed to load data"),
+                          );
+                        }
+                      },
+                    ),
+                  ),
+            ],
+          ),
+        ),
+        floatingActionButton: FloatingActionButton(
+          onPressed: _showAddEspaceDialog,
+          backgroundColor: const Color.fromARGB(255, 209, 207, 207),
+          child: const Icon(Icons.add, color: Color.fromARGB(255, 107, 12, 12)),
+        ),
+        floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+        bottomNavigationBar: BottomAppBarPage(token: widget.token),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () => _showAddEspaceDialog(context),
-        child: const Icon(Icons.add, color: Color.fromARGB(255, 107, 12, 12)),
-      ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
     );
   }
 }

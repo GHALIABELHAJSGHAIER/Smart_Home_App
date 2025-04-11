@@ -1,4 +1,3 @@
-import 'package:clone_spotify_mars/screens/profile_page.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:jwt_decoder/jwt_decoder.dart';
@@ -7,6 +6,7 @@ import 'package:uuid/uuid.dart';
 import '../controllers/maison_controller.dart';
 import '../models/maison_model.dart';
 import '../screens/signin_page.dart';
+import '../screens/espace_page.dart';
 import '../bottomappbar_page.dart';
 
 class HomePage extends StatefulWidget {
@@ -249,7 +249,13 @@ class _HomePageState extends State<HomePage> {
                             itemBuilder: (context, index) {
                               var maison = snapshot.data![index];
                               return ListTile(
-                                leading: Image.asset("assets/maison.png"),
+                                leading: CircleAvatar(
+                                  radius: 40, // Taille de l'image
+                                  backgroundImage: AssetImage(
+                                    "assets/maison.png",
+                                  ),
+                                  backgroundColor: Colors.transparent,
+                                ),
                                 title: Text(maison.name ?? ''),
                                 subtitle: Text(maison.address ?? ''),
                                 trailing: Wrap(
