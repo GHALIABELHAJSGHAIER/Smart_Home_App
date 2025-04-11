@@ -7,6 +7,7 @@ import 'package:uuid/uuid.dart';
 import '../controllers/maison_controller.dart';
 import '../models/maison_model.dart';
 import '../screens/signin_page.dart';
+import '../bottomappbar_page.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key, required this.token});
@@ -302,42 +303,13 @@ class _HomePageState extends State<HomePage> {
             ],
           ),
         ),
-        bottomNavigationBar: BottomAppBar(
-          shape: const CircularNotchedRectangle(),
-          notchMargin: 8.0,
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: [
-              IconButton(
-                icon: const Icon(
-                  Icons.home,
-                  color: Color.fromARGB(255, 61, 14, 214),
-                ),
-                onPressed: () {},
-              ),
-              const SizedBox(width: 40),
-              IconButton(
-                icon: const Icon(
-                  Icons.person,
-                  color: Color.fromARGB(255, 61, 14, 214),
-                ),
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (_) => ProfilePage(token: widget.token),
-                    ),
-                  );
-                },
-              ),
-            ],
-          ),
-        ),
         floatingActionButton: FloatingActionButton(
           onPressed: _showAddMaisonDialog,
+          backgroundColor: const Color.fromARGB(255, 209, 207, 207),
           child: const Icon(Icons.add, color: Color.fromARGB(255, 107, 12, 12)),
         ),
         floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+        bottomNavigationBar: BottomAppBarPage(token: widget.token),
       ),
     );
   }
