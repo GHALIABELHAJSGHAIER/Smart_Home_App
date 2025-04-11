@@ -31,7 +31,7 @@ class MaisonController extends GetxController {
     print(id);
     var response = await http.get(
       Uri.parse('$getMaison/$id'),
-      
+
       headers: {"Content-Type": "application/json"},
     );
 
@@ -84,35 +84,35 @@ class MaisonController extends GetxController {
       return false;
     }
   }
+
   // Update maison: PUT /maisons/updateMaison/:id
-Future<Map<String, dynamic>> updateMaison(String id, MaisonModel maison) async {
-  try {
-    var response = await http.put(
-      Uri.parse('$updatemaison/$id'),
-      headers: {"Content-Type": "application/json"},
-      body: jsonEncode(maison.toJson()),
-    );
+  Future<Map<String, dynamic>> updateMaison(
+    String id,
+    MaisonModel maison,
+  ) async {
+    try {
+      var response = await http.put(
+        Uri.parse('$updatemaison/$id'),
+        headers: {"Content-Type": "application/json"},
+        body: jsonEncode(maison.toJson()),
+      );
 
-    var jsonResponse = jsonDecode(response.body);
+      var jsonResponse = jsonDecode(response.body);
 
-    if (response.statusCode == 200 && jsonResponse['status'] == true) {
-      return {
-        "status": true,
-        "success": "Maison updated successfully",
-        "data": MaisonModel.fromJson(jsonResponse['success'])
-      };
-    } else {
-      return {
-        "status": false,
-        "error": jsonResponse['message'] ?? "Update failed",
-      };
+      if (response.statusCode == 200 && jsonResponse['status'] == true) {
+        return {
+          "status": true,
+          "success": "Maison updated successfully",
+          "data": MaisonModel.fromJson(jsonResponse['success']),
+        };
+      } else {
+        return {
+          "status": false,
+          "error": jsonResponse['message'] ?? "Update failed",
+        };
+      }
+    } catch (e) {
+      return {"status": false, "error": "An error occurred: $e"};
     }
-  } catch (e) {
-    return {
-      "status": false,
-      "error": "An error occurred: $e",
-    };
   }
-}
-
 }

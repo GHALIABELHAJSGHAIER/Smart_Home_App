@@ -5,6 +5,7 @@ import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 
 class EspaceController extends GetxController {
+  static EspaceController get instance => Get.find();
   // Ajouter un espace pour une espace
   Future<Map<String, dynamic>> createEspaceForMaison(EspaceModel espace) async {
     final response = await http.post(
@@ -24,31 +25,18 @@ class EspaceController extends GetxController {
     }
   }
 
-  // Obtenir tous les espaces d'une maison
-  /*Future<Map<String, dynamic>> getAllEspacesByMaisonId(String maisonId) async {
-    final response = await http.get(Uri.parse('$getEspace/$maisonId'));
-
-    final data = jsonDecode(response.body);
-    if (response.statusCode == 200 && data['status'] == true) {
-      return {'success': true, 'data': data['success']};
-    } else {
-      return {
-        'success': false,
-        'message': data['message'] ?? 'Erreur inconnue',
-      };
-    }
-  }*/
+ 
 
   // Méthode publique qui retourne une liste d’EspaceModel
 
   Future<List<EspaceModel>> getEspaces(String id) async {
-    print(id);
     var response = await http.get(
       Uri.parse('$getEspace/$id'),
-      
+
       headers: {"Content-Type": "application/json"},
     );
 
+    print(id);
     print("$getEspace/${id}");
 
     try {

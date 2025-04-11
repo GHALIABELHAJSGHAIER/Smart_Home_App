@@ -13,7 +13,7 @@ class MaisonModel {
   String? name;
   String? address;
 
-  MaisonModel({required  this.id, this.clientId, this.name, this.address});
+  MaisonModel({required this.id, this.clientId, this.name, this.address});
 
   Map<String, dynamic> toJson() {
     return {"id": id, "clientId": clientId, "name": name, "address": address};

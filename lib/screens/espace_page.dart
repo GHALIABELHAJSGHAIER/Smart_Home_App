@@ -26,11 +26,11 @@ class _EspacePageState extends State<EspacePage> {
   late List<EspaceModel> espaces = [];
   late String maisonId;
 
- 
   void initSharedPref() async {
     prefs = await SharedPreferences.getInstance();
     setState(() {
       maisonId = prefs.getString("maisonId")!;
+      print("Maison ID  Espaceeee: $maisonId");
     });
     _loadEspaces();
   }
@@ -140,10 +140,7 @@ class _EspacePageState extends State<EspacePage> {
                 if (_nameController.text.isNotEmpty) {
                   espace.nom = _nameController.text;
 
-                  var result = await controller.updateEspace(
-                    espace.id!,
-                    espace,
-                  );
+                  var result = await controller.updateEspace(espace.id, espace);
                   if (result['success'] == true) {
                     _loadEspaces();
                     Navigator.pop(context);
@@ -231,10 +228,10 @@ class _EspacePageState extends State<EspacePage> {
                           return ListView.builder(
                             itemCount: snapshot.data!.length,
                             itemBuilder: (context, index) {
-                              var espace = snapshot.data![index];
+                              var espace = espaces[index];
                               return ListTile(
                                 leading: CircleAvatar(
-                                  radius: 40, // Taille de l'image
+                                  radius: 40,
                                   backgroundImage: AssetImage(
                                     "assets/maison.png",
                                   ),
@@ -260,7 +257,7 @@ class _EspacePageState extends State<EspacePage> {
                                       ),
                                       onPressed: () async {
                                         var result = await controller
-                                            .deleteEspace(espace.id!);
+                                            .deleteEspace(espace.id);
                                         if (result) {
                                           _loadEspaces();
                                         } else {

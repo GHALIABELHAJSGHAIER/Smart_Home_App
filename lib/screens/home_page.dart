@@ -45,6 +45,7 @@ class _HomePageState extends State<HomePage> {
 
     Map<String, dynamic> jwtDecodedToken = JwtDecoder.decode(widget.token);
     clientId = jwtDecodedToken['id'];
+    print("Client ID: $clientId");
 
     _loadMaisonList();
     initSharedPref();
@@ -156,10 +157,7 @@ class _HomePageState extends State<HomePage> {
                   maison.name = _nameController.text;
                   maison.address = _addressController.text;
 
-                  var result = await controller.updateMaison(
-                    maison.id!,
-                    maison,
-                  );
+                  var result = await controller.updateMaison(maison.id, maison);
                   if (result['success'] == true) {
                     _loadMaisonList();
                     Navigator.pop(context);
@@ -255,7 +253,7 @@ class _HomePageState extends State<HomePage> {
                                         await SharedPreferences.getInstance();
                                     await prefs.setString(
                                       "maisonId",
-                                      maison.id!,
+                                      maison.id,
                                     );
 
                                     Navigator.push(
@@ -299,7 +297,7 @@ class _HomePageState extends State<HomePage> {
                                       ),
                                       onPressed: () async {
                                         var result = await controller
-                                            .deleteMaison(maison.id!);
+                                            .deleteMaison(maison.id);
                                         if (result) {
                                           _loadMaisonList();
                                         } else {
