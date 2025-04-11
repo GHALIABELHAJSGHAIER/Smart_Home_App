@@ -249,13 +249,35 @@ class _HomePageState extends State<HomePage> {
                             itemBuilder: (context, index) {
                               var maison = snapshot.data![index];
                               return ListTile(
-                                leading: CircleAvatar(
-                                  radius: 40, // Taille de l'image
-                                  backgroundImage: AssetImage(
-                                    "assets/maison.png",
+                                leading: GestureDetector(
+                                  onTap: () async {
+                                    final prefs =
+                                        await SharedPreferences.getInstance();
+                                    await prefs.setString(
+                                      "maisonId",
+                                      maison.id!,
+                                    );
+
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder:
+                                            (_) => EspacePage(
+                                              token: widget.token,
+                                              maisonId: maison.id,
+                                            ),
+                                      ),
+                                    );
+                                  },
+                                  child: const CircleAvatar(
+                                    radius: 40,
+                                    backgroundImage: AssetImage(
+                                      "assets/maison.png",
+                                    ),
+                                    backgroundColor: Colors.transparent,
                                   ),
-                                  backgroundColor: Colors.transparent,
                                 ),
+
                                 title: Text(maison.name ?? ''),
                                 subtitle: Text(maison.address ?? ''),
                                 trailing: Wrap(

@@ -25,7 +25,7 @@ class EspaceController extends GetxController {
   }
 
   // Obtenir tous les espaces d'une maison
-  Future<Map<String, dynamic>> getAllEspacesByMaisonId(String maisonId) async {
+  /*Future<Map<String, dynamic>> getAllEspacesByMaisonId(String maisonId) async {
     final response = await http.get(Uri.parse('$getEspace/$maisonId'));
 
     final data = jsonDecode(response.body);
@@ -37,7 +37,7 @@ class EspaceController extends GetxController {
         'message': data['message'] ?? 'Erreur inconnue',
       };
     }
-  }
+  }*/
 
   // Méthode publique qui retourne une liste d’EspaceModel
 
@@ -45,9 +45,7 @@ class EspaceController extends GetxController {
     print(id);
     var response = await http.get(
       Uri.parse('$getEspace/$id'),
-      /*Uri.parse(
-        'http://10.0.2.2:5000/espaces/getEspace/67eea46ad413b6036625516c',
-      ),*/
+      
       headers: {"Content-Type": "application/json"},
     );
 
@@ -86,7 +84,7 @@ class EspaceController extends GetxController {
       };
     }
   }*/
-   Future<bool> deleteEspace(String id) async {
+  Future<bool> deleteEspace(String id) async {
     try {
       var response = await http.delete(
         Uri.parse('$deleteEspace/$id'),

@@ -31,9 +31,7 @@ class MaisonController extends GetxController {
     print(id);
     var response = await http.get(
       Uri.parse('$getMaison/$id'),
-      /*Uri.parse(
-        'http://10.0.2.2:5000/maisons/getMaisonsByClientId/67eea46ad413b6036625516c',
-      ),*/
+      
       headers: {"Content-Type": "application/json"},
     );
 

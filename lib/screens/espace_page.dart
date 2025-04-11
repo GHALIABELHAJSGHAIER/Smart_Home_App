@@ -11,8 +11,9 @@ import '../models/espace_model.dart';
 import 'profile_page.dart';
 
 class EspacePage extends StatefulWidget {
-  const EspacePage({super.key, required this.token});
+  const EspacePage({super.key, required this.token, required this.maisonId});
   final String token;
+  final String maisonId;
   @override
   State<EspacePage> createState() => _EspacePageState();
 }
@@ -25,10 +26,8 @@ class _EspacePageState extends State<EspacePage> {
   late List<EspaceModel> espaces = [];
   late String maisonId;
 
-  /*void initSharedPref() async {
-    prefs = await SharedPreferences.getInstance();
-  }*/
-  Future<void> _initPrefs() async {
+ 
+  void initSharedPref() async {
     prefs = await SharedPreferences.getInstance();
     setState(() {
       maisonId = prefs.getString("maisonId")!;
@@ -47,11 +46,9 @@ class _EspacePageState extends State<EspacePage> {
   void initState() {
     _nameController = TextEditingController();
     _formkey = GlobalKey<FormState>();
-
-    /*Map<String, dynamic> jwtDecodedToken = JwtDecoder.decode(widget.token);
-    maisonId = jwtDecodedToken['id'];*/
+    initSharedPref();
     _loadEspaces();
-    _initPrefs();
+
     super.initState();
   }
 
@@ -175,7 +172,7 @@ class _EspacePageState extends State<EspacePage> {
           foregroundColor: Colors.black,
           backgroundColor: Colors.white,
           title: const Text(
-            "Home Page",
+            "Mes Espaces",
             style: TextStyle(fontSize: 24, fontWeight: FontWeight.w400),
           ),
           centerTitle: true,
