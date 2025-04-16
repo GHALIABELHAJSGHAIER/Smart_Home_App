@@ -20,23 +20,14 @@ class EspacePage extends StatefulWidget {
 
 class _EspacePageState extends State<EspacePage> {
   final controller = Get.put(EspaceController());
-  late TextEditingController _nameController;
+  late TextEditingController _nomController;
   late SharedPreferences prefs;
   late GlobalKey<FormState> _formkey;
   late List<EspaceModel> espaces = [];
   late String maisonId;
 
-  void initSharedPref() async {
-    prefs = await SharedPreferences.getInstance();
-    setState(() {
-      maisonId = prefs.getString("maisonId")!;
-      print("Maison ID  Espaceeee: $maisonId");
-    });
-    _loadEspaces();
-  }
-
   Future<void> _loadEspaces() async {
-    List<EspaceModel> list = await controller.getEspaces(maisonId);
+    List<EspaceModel> list = await controller.getEspaces(widget.maisonId);
     setState(() {
       espaces = list;
     });
@@ -44,9 +35,8 @@ class _EspacePageState extends State<EspacePage> {
 
   @override
   void initState() {
-    _nameController = TextEditingController();
+    _nomController = TextEditingController();
     _formkey = GlobalKey<FormState>();
-    initSharedPref();
     _loadEspaces();
 
     super.initState();
@@ -54,24 +44,24 @@ class _EspacePageState extends State<EspacePage> {
 
   @override
   void dispose() {
-    _nameController.dispose();
+    _nomController.dispose();
     controller.dispose();
     super.dispose();
   }
 
   Future<void> _showAddEspaceDialog() async {
-    _nameController.clear();
+    _nomController.clear();
 
     return showDialog(
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: const Text("Ajouter une Maison"),
+          title: const Text("Ajouter une Espace"),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
               TextField(
-                controller: _nameController,
+                controller: _nomController,
                 decoration: const InputDecoration(
                   labelText: "Nom de la Espace",
                 ),
@@ -85,10 +75,10 @@ class _EspacePageState extends State<EspacePage> {
             ),
             ElevatedButton(
               onPressed: () async {
-                if (_nameController.text.isNotEmpty) {
+                if (_nomController.text.isNotEmpty) {
                   var espace = EspaceModel(
                     id: const Uuid().v4(),
-                    nom: _nameController.text,
+                    nom: _nomController.text,
                     maisonId: maisonId,
                   );
 
@@ -112,7 +102,7 @@ class _EspacePageState extends State<EspacePage> {
   }
 
   Future<void> _showUpdateEspaceDialog(EspaceModel espace) async {
-    _nameController.clear();
+    _nomController.clear();
 
     return showDialog(
       context: context,
@@ -123,7 +113,7 @@ class _EspacePageState extends State<EspacePage> {
             mainAxisSize: MainAxisSize.min,
             children: [
               TextField(
-                controller: _nameController,
+                controller: _nomController,
                 decoration: const InputDecoration(
                   labelText: "Nom de la espace",
                 ),
@@ -137,8 +127,8 @@ class _EspacePageState extends State<EspacePage> {
             ),
             ElevatedButton(
               onPressed: () async {
-                if (_nameController.text.isNotEmpty) {
-                  espace.nom = _nameController.text;
+                if (_nomController.text.isNotEmpty) {
+                  espace.nom = _nomController.text;
 
                   var result = await controller.updateEspace(espace.id, espace);
                   if (result['success'] == true) {
@@ -217,7 +207,7 @@ class _EspacePageState extends State<EspacePage> {
                   )
                   : Expanded(
                     child: FutureBuilder<List<EspaceModel>>(
-                      future: controller.getEspaces(maisonId),
+                      future: controller.getEspaces(widget.maisonId),
                       builder: (context, snapshot) {
                         if (snapshot.connectionState ==
                             ConnectionState.waiting) {

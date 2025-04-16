@@ -25,17 +25,18 @@ class EspaceController extends GetxController {
     }
   }
 
- 
-
   // Méthode publique qui retourne une liste d’EspaceModel
 
   Future<List<EspaceModel>> getEspaces(String id) async {
+    print("BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB");
+    print("Maison Id $id");
     var response = await http.get(
       Uri.parse('$getEspace/$id'),
 
       headers: {"Content-Type": "application/json"},
     );
 
+    print("aaaaaaaaaaaaaAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
     print(id);
     print("$getEspace/${id}");
 
