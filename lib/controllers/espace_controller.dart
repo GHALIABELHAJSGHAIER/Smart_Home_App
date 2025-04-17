@@ -107,36 +107,5 @@ class EspaceController extends GetxController {
       };
     }
   }
-  // Future<Map<String, dynamic>> updateEspace(
-  //   String id,
-  //   EspaceModel espace,
-  // ) async {
-  //   try {
-  //     var response = await http.put(
-  //       Uri.parse('$updateespace/$id'),
-  //       headers: {"Content-Type": "application/json"},
-  //       body: jsonEncode(espace.toJson()),
-  //     );
-  //     print(id);
-  //     print("$updateespace/$id");
-
-  //     var jsonResponse = jsonDecode(response.body);
-
-  //     if (response.statusCode == 200 && jsonResponse['status'] == true) {
-  //       var jsonResponse = jsonDecode(response.body);
-  //       return {
-  //         "status": true,
-  //         "success": "ESPACE updated successfully",
-  //         "data": EspaceModel.fromJson(jsonResponse['success']),
-  //       };
-  //     } else {
-  //       return {
-  //         "status": false,
-  //         "error": jsonResponse['message'] ?? "Update failed",
-  //       };
-  //     }
-  //   } catch (e) {
-  //     return {"status": false, "error": "An error occurred: $e"};
-  //   }
-  // }
+  
 }

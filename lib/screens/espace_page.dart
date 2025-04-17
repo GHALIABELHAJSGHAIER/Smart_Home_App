@@ -104,7 +104,6 @@ class _EspacePageState extends State<EspacePage> {
     );
   }
 
-
   Future<void> _showUpdateEspaceDialog(EspaceModel espace) async {
     _nomController.text = espace.nom ?? '';
 

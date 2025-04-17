@@ -7,24 +7,7 @@ import 'package:http/http.dart' as http;
 class MaisonController extends GetxController {
   static MaisonController get instance => Get.find();
 
-  // Future<Map<String, dynamic>> createMaison(MaisonModel maison) async {
-  //   var response = await http.post(
-  //     Uri.parse(storeMaison),
-  //     headers: {"Content-Type": "application/json"},
-  //     body: jsonEncode(maison.toJson()),
-  //   );
-
-  //   var jsonResponse = jsonDecode(response.body);
-
-  //   if (jsonResponse['status'] == true) {
-  //     return {"status": true, "success": "MAISON Registered Successfully"};
-  //   } else {
-  //     return {
-  //       "status": false,
-  //       "error": jsonResponse['message'] ?? "MAISON Failed",
-  //     };
-  //   }
-  // }
+ 
   Future<Map<String, dynamic>> createMaison(MaisonModel maison) async {
     final response = await http.post(
       Uri.parse(addMaison),
@@ -92,37 +75,7 @@ class MaisonController extends GetxController {
   }
 
   // Update maison: PUT /maisons/updateMaison/:id
-  //   Future<Map<String, dynamic>> updateMaison(
-  //     String id,
-  //     MaisonModel maison,
-  //   ) async {
-  //     try {
-  //       var response = await http.put(
-  //         Uri.parse('$updatemaison/$id'),
-  //         headers: {"Content-Type": "application/json"},
-  //         body: jsonEncode(maison.toJson()),
-  //       );
-
-  //       var jsonResponse = jsonDecode(response.body);
-
-  //       if (response.statusCode == 200 && jsonResponse['status'] == true) {
-  //         return {
-  //           "status": true,
-  //           "success": "Maison updated successfully",
-  //           "data": MaisonModel.fromJson(jsonResponse['success']),
-  //         };
-  //       } else {
-  //         return {
-  //           "status": false,
-  //           "error": jsonResponse['message'] ?? "Update failed",
-  //         };
-  //       }
-  //     } catch (e) {
-  //       return {"status": false, "error": "An error occurred: $e"};
-  //     }
-  //   }
-
-  // }
+ 
   Future<Map<String, dynamic>> updateMaison(
     String id,
     MaisonModel maison,

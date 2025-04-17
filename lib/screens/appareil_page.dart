@@ -195,7 +195,7 @@ import 'package:flutter/material.dart';
 // ... [imports identiques]
 
 class AppareilPage extends StatefulWidget {
-  const AppareilPage({super.key, required this.id});
+  const AppareilPage({required this.id});
   final String id;
   @override
   _AppareilPageState createState() => _AppareilPageState();
