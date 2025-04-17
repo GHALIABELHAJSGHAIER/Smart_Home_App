@@ -6,7 +6,7 @@ const login = "${url}users/login";
 const getuserbyid = "${url}users/getUserById";
 
 //maison
-const storeMaison = "${url}maisons/addMaisonForClient";
+const addMaison = "${url}maisons/addMaisonForClient";
 const getMaison = "${url}maisons/getMaisonsByClientId";
 const deletemaison = "${url}maisons/deleteMaisonById";
 const updatemaison = "${url}maisons/updateMaison";
@@ -14,5 +14,5 @@ const updatemaison = "${url}maisons/updateMaison";
 //espace
 const addEspace = "${url}espaces/addEspaceForMaison";
 const getEspace = "${url}espaces/getAllEspacesByIdMaison";
-const deleteEspace = "${url}espaces/deleteEspaceById";
-const updateEspace = "${url}espaces/updateEspace";
+const deleteespace = "${url}espaces/deleteEspaceById";
+const updateespace = "${url}espaces/updateEspace";

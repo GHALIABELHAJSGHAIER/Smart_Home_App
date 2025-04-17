@@ -1,4 +1,5 @@
 import 'package:clone_spotify_mars/bottomappbar_page.dart';
+import 'package:clone_spotify_mars/screens/appareil_page.dart';
 import 'package:clone_spotify_mars/screens/signin_page.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -28,6 +29,7 @@ class _EspacePageState extends State<EspacePage> {
 
   Future<void> _loadEspaces() async {
     List<EspaceModel> list = await controller.getEspaces(widget.maisonId);
+    print(list);
     setState(() {
       espaces = list;
     });
@@ -37,6 +39,7 @@ class _EspacePageState extends State<EspacePage> {
   void initState() {
     _nomController = TextEditingController();
     _formkey = GlobalKey<FormState>();
+    maisonId = widget.maisonId;
     _loadEspaces();
 
     super.initState();
@@ -101,21 +104,22 @@ class _EspacePageState extends State<EspacePage> {
     );
   }
 
+
   Future<void> _showUpdateEspaceDialog(EspaceModel espace) async {
-    _nomController.clear();
+    _nomController.text = espace.nom ?? '';
 
     return showDialog(
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: const Text("Modifier la Espace"),
+          title: const Text("Modifier la Maison"),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
               TextField(
                 controller: _nomController,
                 decoration: const InputDecoration(
-                  labelText: "Nom de la espace",
+                  labelText: "Nom de la maison",
                 ),
               ),
             ],
@@ -218,7 +222,7 @@ class _EspacePageState extends State<EspacePage> {
                           return ListView.builder(
                             itemCount: snapshot.data!.length,
                             itemBuilder: (context, index) {
-                              var espace = espaces[index];
+                              var espace = snapshot.data![index];
                               return ListTile(
                                 leading: CircleAvatar(
                                   radius: 40,

@@ -195,6 +195,8 @@ import 'package:flutter/material.dart';
 // ... [imports identiques]
 
 class AppareilPage extends StatefulWidget {
+  const AppareilPage({super.key, required this.id});
+  final String id;
   @override
   _AppareilPageState createState() => _AppareilPageState();
 }
@@ -412,7 +414,7 @@ class _AppareilPageState extends State<AppareilPage> {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (context) => const ProfilePage(token: 'token',),
+                      builder: (context) => const ProfilePage(token: 'token'),
                     ),
                   );
                 },

@@ -21,6 +21,7 @@ class _HomePageState extends State<HomePage> {
   final controller = Get.put(MaisonController());
   late TextEditingController _nameController;
   late TextEditingController _addressController;
+  late TextEditingController _numCartEspController;
   late SharedPreferences prefs;
   late GlobalKey<FormState> _formkey;
   late List<MaisonModel> items = [];
@@ -41,6 +42,7 @@ class _HomePageState extends State<HomePage> {
   void initState() {
     _nameController = TextEditingController();
     _addressController = TextEditingController();
+    _numCartEspController = TextEditingController();
     _formkey = GlobalKey<FormState>();
 
     Map<String, dynamic> jwtDecodedToken = JwtDecoder.decode(widget.token);
@@ -56,6 +58,7 @@ class _HomePageState extends State<HomePage> {
   void dispose() {
     _nameController.dispose();
     _addressController.dispose();
+    _numCartEspController.dispose();
     controller.dispose();
     super.dispose();
   }
@@ -63,12 +66,13 @@ class _HomePageState extends State<HomePage> {
   Future<void> _showAddMaisonDialog() async {
     _nameController.clear();
     _addressController.clear();
+    _numCartEspController.clear();
 
     return showDialog(
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: const Text("Ajouter une Maison"),
+          title: const Text("Ajouter une Espace"),
           content: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
@@ -83,6 +87,11 @@ class _HomePageState extends State<HomePage> {
                 controller: _addressController,
                 decoration: const InputDecoration(labelText: "Adresse"),
               ),
+              const SizedBox(height: 10),
+              TextField(
+                controller: _numCartEspController,
+                decoration: const InputDecoration(labelText: "Nom Carte"),
+              ),
             ],
           ),
           actions: [
@@ -93,11 +102,13 @@ class _HomePageState extends State<HomePage> {
             ElevatedButton(
               onPressed: () async {
                 if (_nameController.text.isNotEmpty &&
-                    _addressController.text.isNotEmpty) {
+                    _addressController.text.isNotEmpty &&
+                    _numCartEspController.text.isNotEmpty) {
                   var maison = MaisonModel(
                     id: const Uuid().v4(),
                     name: _nameController.text,
                     address: _addressController.text,
+                    numCartEsp: _numCartEspController.text,
                     clientId: clientId,
                   );
 
@@ -120,9 +131,78 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
+  /*Future<void> _showAddMaisonDialog() async {
+    _nameController.clear();
+    _addressController.clear();
+    _numCartEspController.clear();
+
+    return showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text("Ajouter une Maison"),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              TextField(
+                controller: _nameController,
+                decoration: const InputDecoration(
+                  labelText: "Nom de la maison",
+                ),
+              ),
+              const SizedBox(height: 10),
+              TextField(
+                controller: _addressController,
+                decoration: const InputDecoration(labelText: "Adresse"),
+              ),
+              const SizedBox(height: 10),
+              TextField(
+                controller: _numCartEspController,
+                decoration: const InputDecoration(labelText: "Nom Carte"),
+              ),
+            ],
+          ),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text("Annuler"),
+            ),
+            ElevatedButton(
+              onPressed: () async {
+                if (_nameController.text.isNotEmpty &&
+                    _addressController.text.isNotEmpty &&
+                    _numCartEspController.text.isNotEmpty) {
+                  var maison = MaisonModel(
+                    id: const Uuid().v4(),
+                    name: _nameController.text,
+                    address: _addressController.text,
+                    numCartEsp: _numCartEspController.text,
+                    clientId: clientId,
+                  );
+
+                  var result = await controller.createMaison(maison);
+                  if (result['success'] == true) {
+                    _loadMaisonList();
+                    Navigator.pop(context);
+                  } else {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(content: Text("Erreur lors de l'ajout")),
+                    );
+                  }
+                }
+              },
+              child: const Text("Ajouter"),
+            ),
+          ],
+        );
+      },
+    );
+  }*/
+
   Future<void> _showUpdateMaisonDialog(MaisonModel maison) async {
     _nameController.text = maison.name ?? '';
     _addressController.text = maison.address ?? '';
+    _numCartEspController.text = maison.numCartEsp ?? '';
 
     return showDialog(
       context: context,
@@ -143,6 +223,11 @@ class _HomePageState extends State<HomePage> {
                 controller: _addressController,
                 decoration: const InputDecoration(labelText: "Adresse"),
               ),
+              const SizedBox(height: 10),
+              TextField(
+                controller: _numCartEspController,
+                decoration: const InputDecoration(labelText: "Nom Carte"),
+              ),
             ],
           ),
           actions: [
@@ -156,6 +241,7 @@ class _HomePageState extends State<HomePage> {
                     _addressController.text.isNotEmpty) {
                   maison.name = _nameController.text;
                   maison.address = _addressController.text;
+                  maison.numCartEsp = _numCartEspController.text;
 
                   var result = await controller.updateMaison(maison.id, maison);
                   if (result['success'] == true) {
@@ -190,6 +276,7 @@ class _HomePageState extends State<HomePage> {
             style: TextStyle(fontSize: 24, fontWeight: FontWeight.w400),
           ),
           centerTitle: true,
+
           actions: [
             IconButton(
               icon: const Icon(
@@ -277,7 +364,13 @@ class _HomePageState extends State<HomePage> {
                                 ),
 
                                 title: Text(maison.name ?? ''),
-                                subtitle: Text(maison.address ?? ''),
+                                subtitle: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(maison.address ?? ''),
+                                    Text(maison.numCartEsp ?? ''),
+                                  ],
+                                ),
                                 trailing: Wrap(
                                   spacing: 10,
                                   children: [

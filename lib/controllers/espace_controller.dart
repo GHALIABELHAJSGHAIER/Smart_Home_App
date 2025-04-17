@@ -32,60 +32,54 @@ class EspaceController extends GetxController {
     print("Maison Id $id");
     var response = await http.get(
       Uri.parse('$getEspace/$id'),
-
       headers: {"Content-Type": "application/json"},
     );
-
     print("aaaaaaaaaaaaaAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
     print(id);
-    print("$getEspace/${id}");
+    print("$getEspace/$id");
+    print(response.body);
 
     try {
       if (response.statusCode == 200) {
         var jsonResponse = jsonDecode(response.body);
 
-        if (jsonResponse['status'] == true) {
-          return (jsonResponse['success'] as List)
-              .map((espace) => EspaceModel.fromJson(espace))
-              .toList();
+        // Ajout d'un contrôle supplémentaire sur le format de la réponse
+        if (jsonResponse['status'] == true && jsonResponse['success'] is List) {
+          List<EspaceModel> espaces =
+              (jsonResponse['success'] as List)
+                  .map((espace) => EspaceModel.fromJson(espace))
+                  .toList();
+          print(
+            'Espaces : $espaces',
+          ); // Vérifiez si vous obtenez les bons espaces
+          return espaces;
         } else {
+          print('Aucune donnée disponible ou format incorrect');
           return [];
         }
       } else {
         throw Exception("Failed to load data: ${response.statusCode}");
       }
     } catch (e) {
+      print('Erreur : $e');
       return [];
     }
   }
 
   // Supprimer un espace
-  /*Future<Map<String, dynamic>> deleteEspace(String id) async {
-    final response = await http.delete(Uri.parse('$deleteEspace/$id'));
-
-    final data = jsonDecode(response.body);
-    if (response.statusCode == 200 && data['status'] == true) {
-      return {'success': true, 'message': data['success']};
-    } else {
-      return {
-        'success': false,
-        'message': data['message'] ?? 'Erreur inconnue',
-      };
-    }
-  }*/
   Future<bool> deleteEspace(String id) async {
     try {
       var response = await http.delete(
-        Uri.parse('$deleteEspace/$id'),
+        Uri.parse('$deleteespace/$id'),
         headers: {"Content-Type": "application/json"},
       );
-      print("$deleteEspace/${id}");
+      print("$deleteespace/${id}");
 
       if (response.statusCode == 200) {
         var jsonResponse = jsonDecode(response.body);
         return jsonResponse['status'];
       } else {
-        throw Exception("Failed to delete espace: ${response.statusCode}");
+        throw Exception("Failed to delete maison: ${response.statusCode}");
       }
     } catch (e) {
       return false;
@@ -97,9 +91,9 @@ class EspaceController extends GetxController {
     String id,
     EspaceModel espace,
   ) async {
-    final response = await http.put(
-      Uri.parse('$updateEspace/$id'),
-      headers: {'Content-Type': 'application/json'},
+    var response = await http.put(
+      Uri.parse('$updateespace/$id'),
+      headers: {"Content-Type": "application/json"},
       body: jsonEncode(espace.toJson()),
     );
 
@@ -113,4 +107,36 @@ class EspaceController extends GetxController {
       };
     }
   }
+  // Future<Map<String, dynamic>> updateEspace(
+  //   String id,
+  //   EspaceModel espace,
+  // ) async {
+  //   try {
+  //     var response = await http.put(
+  //       Uri.parse('$updateespace/$id'),
+  //       headers: {"Content-Type": "application/json"},
+  //       body: jsonEncode(espace.toJson()),
+  //     );
+  //     print(id);
+  //     print("$updateespace/$id");
+
+  //     var jsonResponse = jsonDecode(response.body);
+
+  //     if (response.statusCode == 200 && jsonResponse['status'] == true) {
+  //       var jsonResponse = jsonDecode(response.body);
+  //       return {
+  //         "status": true,
+  //         "success": "ESPACE updated successfully",
+  //         "data": EspaceModel.fromJson(jsonResponse['success']),
+  //       };
+  //     } else {
+  //       return {
+  //         "status": false,
+  //         "error": jsonResponse['message'] ?? "Update failed",
+  //       };
+  //     }
+  //   } catch (e) {
+  //     return {"status": false, "error": "An error occurred: $e"};
+  //   }
+  // }
 }
