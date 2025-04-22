@@ -189,7 +189,7 @@ class _EspacePageState extends State<EspacePage> {
           height: double.infinity,
           decoration: const BoxDecoration(
             image: DecorationImage(
-              image: AssetImage("assets/background.png"),
+              image: AssetImage("assets/backgroundd.png"),
               fit: BoxFit.cover,
             ),
           ),

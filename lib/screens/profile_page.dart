@@ -82,7 +82,7 @@ class _ProfilePageState extends State<ProfilePage> {
         height: double.infinity,
         decoration: const BoxDecoration(
           image: DecorationImage(
-            image: AssetImage("assets/background.png"), // Image de fond
+            image: AssetImage("assets/backgroundd.png"), // Image de fond
             fit: BoxFit.cover,
           ),
         ),
