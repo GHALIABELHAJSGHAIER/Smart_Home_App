@@ -230,7 +230,13 @@ class _EspacePageState extends State<EspacePage> {
                                   ),
                                   backgroundColor: Colors.transparent,
                                 ),
-                                title: Text(espace.nom),
+
+                                //title: Text(espace.nom),
+                                title: Text(espace.nom ?? ''),
+                                subtitle: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                ),
+
                                 trailing: Wrap(
                                   spacing: 10,
                                   children: [

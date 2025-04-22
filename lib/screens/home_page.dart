@@ -131,7 +131,6 @@ class _HomePageState extends State<HomePage> {
     );
   }
 
-
   Future<void> _showUpdateMaisonDialog(MaisonModel maison) async {
     _nameController.text = maison.name ?? '';
     _addressController.text = maison.address ?? '';
@@ -233,7 +232,7 @@ class _HomePageState extends State<HomePage> {
           height: double.infinity,
           decoration: const BoxDecoration(
             image: DecorationImage(
-              image: AssetImage("assets/background.png"),
+              image: AssetImage("assets/backgroundd.png"),
               fit: BoxFit.cover,
             ),
           ),
@@ -266,80 +265,126 @@ class _HomePageState extends State<HomePage> {
                             itemCount: snapshot.data!.length,
                             itemBuilder: (context, index) {
                               var maison = snapshot.data![index];
-                              return ListTile(
-                                leading: GestureDetector(
-                                  onTap: () async {
-                                    final prefs =
-                                        await SharedPreferences.getInstance();
-                                    await prefs.setString(
-                                      "maisonId",
-                                      maison.id,
-                                    );
-
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder:
-                                            (_) => EspacePage(
-                                              token: widget.token,
-                                              maisonId: maison.id,
-                                            ),
-                                      ),
-                                    );
-                                  },
-                                  child: const CircleAvatar(
-                                    radius: 40,
-                                    backgroundImage: AssetImage(
-                                      "assets/maison.png",
+                              return GestureDetector(
+                                onTap: () async {
+                                  final prefs =
+                                      await SharedPreferences.getInstance();
+                                  await prefs.setString("maisonId", maison.id);
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder:
+                                          (_) => EspacePage(
+                                            token: widget.token,
+                                            maisonId: maison.id,
+                                          ),
                                     ),
-                                    backgroundColor: Colors.transparent,
+                                  );
+                                },
+                                child: Card(
+                                  margin: const EdgeInsets.all(10),
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(15),
                                   ),
-                                ),
-
-                                title: Text(maison.name ?? ''),
-                                subtitle: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(maison.address ?? ''),
-                                    Text(maison.numCartEsp ?? ''),
-                                  ],
-                                ),
-                                trailing: Wrap(
-                                  spacing: 10,
-                                  children: [
-                                    IconButton(
-                                      icon: const Icon(
-                                        Icons.edit,
-                                        color: Colors.orange,
+                                  child: Container(
+                                    height: 120, // Hauteur réduite
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(15),
+                                      image: DecorationImage(
+                                        image: AssetImage(
+                                          "assets/maison.png",
+                                        ), // Votre image
+                                        fit: BoxFit.cover,
+                                        colorFilter: ColorFilter.mode(
+                                          Colors.black.withOpacity(0.3),
+                                          BlendMode.darken,
+                                        ),
                                       ),
-                                      onPressed: () {
-                                        _showUpdateMaisonDialog(maison);
-                                      },
                                     ),
-                                    IconButton(
-                                      icon: const Icon(
-                                        Icons.delete,
-                                        color: Colors.red,
+                                    child: Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                        horizontal: 15,
                                       ),
-                                      onPressed: () async {
-                                        var result = await controller
-                                            .deleteMaison(maison.id);
-                                        if (result) {
-                                          _loadMaisonList();
-                                        } else {
-                                          ScaffoldMessenger.of(
-                                            context,
-                                          ).showSnackBar(
-                                            const SnackBar(
-                                              content: Text(
-                                                "Échec de la suppression",
-                                              ),
+                                      child: Row(
+                                        children: [
+                                          Expanded(
+                                            child: Column(
+                                              mainAxisAlignment:
+                                                  MainAxisAlignment.center,
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                Text(
+                                                  maison.name ?? '',
+                                                  style: const TextStyle(
+                                                    fontSize: 20,
+                                                    fontWeight: FontWeight.bold,
+                                                    color: Colors.white,
+                                                  ),
+                                                ),
+                                                const SizedBox(height: 5),
+                                                Text(
+                                                  maison.address ?? '',
+                                                  style: const TextStyle(
+                                                    fontSize: 14,
+                                                    color: Colors.white,
+                                                  ),
+                                                ),
+                                                const SizedBox(height: 5),
+                                                Text(
+                                                  maison.numCartEsp ?? '',
+                                                  style: const TextStyle(
+                                                    fontSize: 14,
+                                                    color: Colors.white,
+                                                  ),
+                                                ),
+                                              ],
                                             ),
-                                          );
-                                        }
-                                      },
+                                          ),
+                                          Column(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
+                                            children: [
+                                              IconButton(
+                                                icon: const Icon(
+                                                  Icons.edit,
+                                                  color: Colors.white,
+                                                ),
+                                                onPressed: () {
+                                                  _showUpdateMaisonDialog(
+                                                    maison,
+                                                  );
+                                                },
+                                              ),
+                                              IconButton(
+                                                icon: const Icon(
+                                                  Icons.delete,
+                                                  color: Colors.white,
+                                                ),
+                                                onPressed: () async {
+                                                  var result = await controller
+                                                      .deleteMaison(maison.id);
+                                                  if (result) {
+                                                    _loadMaisonList();
+                                                  } else {
+                                                    ScaffoldMessenger.of(
+                                                      context,
+                                                    ).showSnackBar(
+                                                      const SnackBar(
+                                                        content: Text(
+                                                          "Échec de la suppression",
+                                                        ),
+                                                      ),
+                                                    );
+                                                  }
+                                                },
+                                              ),
+                                            ],
+                                          ),
+                                        ],
+                                      ),
                                     ),
-                                  ],
+                                  ),
                                 ),
                               );
                             },
