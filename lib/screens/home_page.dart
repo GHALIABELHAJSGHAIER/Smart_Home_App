@@ -443,8 +443,8 @@ class _HomePageState extends State<HomePage> {
         ),
         floatingActionButton: FloatingActionButton(
           onPressed: _showAddMaisonDialog,
-          backgroundColor: Colors.white,
-          child: const Icon(Icons.add, color: Color.fromARGB(255, 61, 14, 214)),
+          backgroundColor: const Color.fromARGB(255, 209, 207, 207),
+          child: const Icon(Icons.add, color: Color.fromARGB(255, 107, 12, 12)),
         ),
         floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
         bottomNavigationBar: BottomAppBarPage(token: widget.token),

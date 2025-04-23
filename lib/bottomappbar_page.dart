@@ -1,3 +1,4 @@
+import 'package:clone_spotify_mars/screens/home_page.dart';
 import 'package:flutter/material.dart';
 import '../screens/profile_page.dart';
 
@@ -15,14 +16,20 @@ class BottomAppBarPage extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.spaceAround,
         children: [
           IconButton(
-            icon: const Icon(
-              Icons.home,
-              color: Color.fromARGB(255, 61, 14, 214),
-            ),
-            onPressed: () {
-              // Action de la maison
-            },
-          ),
+  icon: const Icon(
+    Icons.home,
+    color: Color.fromARGB(255, 61, 14, 214),
+  ),
+  onPressed: () {
+    Navigator.pushReplacement(
+      context,
+      MaterialPageRoute(
+        builder: (_) => HomePage(token: token),
+      ),
+    );
+  },
+),
+
           const SizedBox(width: 40),
           IconButton(
             icon: const Icon(

@@ -223,20 +223,27 @@ class _EspacePageState extends State<EspacePage> {
                             itemBuilder: (context, index) {
                               var espace = snapshot.data![index];
                               return ListTile(
+                                onTap: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder:
+                                          (context) => AppareilPage(
+                                            token: widget.token,
+                                            id: espace.id,
+                                          ),
+                                    ),
+                                  );
+                                },
                                 leading: CircleAvatar(
                                   radius: 40,
-                                  backgroundImage: AssetImage(
+                                  backgroundImage: const AssetImage(
                                     "assets/maison.png",
                                   ),
                                   backgroundColor: Colors.transparent,
                                 ),
-
-                                //title: Text(espace.nom),
                                 title: Text(espace.nom ?? ''),
-                                subtitle: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                ),
-
+                                subtitle: const Text(''),
                                 trailing: Wrap(
                                   spacing: 10,
                                   children: [
