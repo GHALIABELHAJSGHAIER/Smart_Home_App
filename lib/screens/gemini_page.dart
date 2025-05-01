@@ -9,53 +9,116 @@ class GeminiPage extends StatefulWidget {
 class _GeminiPageState extends State<GeminiPage> {
   final GeminiController _controller = GeminiController();
   final TextEditingController _promptController = TextEditingController();
+  final ScrollController _scrollController = ScrollController();
 
-  String _result = '';
+  List<Map<String, String>> _messages =
+      []; // [{ "role": "user"/"assistant", "text": "..." }]
   bool _loading = false;
 
   void _generate() async {
+    final prompt = _promptController.text.trim();
+    if (prompt.isEmpty) return;
+
     setState(() {
+      _messages.add({"role": "user", "text": prompt});
       _loading = true;
-      _result = '';
+      _promptController.clear();
     });
 
     try {
-      final response = await _controller.generateContent(_promptController.text);
+      final response = await _controller.generateContent(prompt);
       setState(() {
-        _result = response.response;
+        _messages.add({"role": "assistant", "text": response.response});
       });
     } catch (e) {
       setState(() {
-        _result = 'Erreur : $e';
+        _messages.add({"role": "assistant", "text": 'Erreur : $e'});
       });
     } finally {
-      setState(() {
-        _loading = false;
+      setState(() => _loading = false);
+      Future.delayed(Duration(milliseconds: 300), () {
+        _scrollController.animateTo(
+          _scrollController.position.maxScrollExtent,
+          duration: Duration(milliseconds: 300),
+          curve: Curves.easeOut,
+        );
       });
     }
+  }
+
+  Widget _buildMessageBubble(String role, String text) {
+    final isUser = role == "user";
+    return Align(
+      alignment: isUser ? Alignment.centerRight : Alignment.centerLeft,
+      child: Container(
+        margin: EdgeInsets.symmetric(vertical: 4),
+        padding: EdgeInsets.all(12),
+        constraints: BoxConstraints(
+          maxWidth: MediaQuery.of(context).size.width * 0.75,
+        ),
+        decoration: BoxDecoration(
+          color: isUser ? Colors.blueAccent : Colors.grey[300],
+          borderRadius: BorderRadius.circular(16),
+        ),
+        child: Text(
+          text,
+          style: TextStyle(color: isUser ? Colors.white : Colors.black87),
+        ),
+      ),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("Gemini Generator")),
-      body: Padding(
-        padding: EdgeInsets.all(16),
-        child: Column(
-          children: [
-            TextField(
-              controller: _promptController,
-              decoration: InputDecoration(labelText: "Prompt"),
+      appBar: AppBar(title: Text("Chat Gemini")),
+      body: Column(
+        children: [
+          Expanded(
+            child: SingleChildScrollView(
+              controller: _scrollController,
+              padding: EdgeInsets.all(16),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children:
+                    _messages.map((message) {
+                      return _buildMessageBubble(
+                        message["role"]!,
+                        message["text"]!,
+                      );
+                    }).toList(),
+              ),
             ),
-            SizedBox(height: 20),
-            ElevatedButton(
-              onPressed: _loading ? null : _generate,
-              child: _loading ? CircularProgressIndicator() : Text("Générer"),
+          ),
+          if (_loading)
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: CircularProgressIndicator(),
             ),
-            SizedBox(height: 20),
-            Expanded(child: SingleChildScrollView(child: Text(_result))),
-          ],
-        ),
+          Divider(height: 1),
+          Container(
+            padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+            color: Colors.white,
+            child: Row(
+              children: [
+                Expanded(
+                  child: TextField(
+                    controller: _promptController,
+                    decoration: InputDecoration.collapsed(
+                      hintText: "Écris ton message...",
+                    ),
+                    onSubmitted: (_) => _generate(),
+                  ),
+                ),
+                IconButton(
+                  icon: Icon(Icons.send),
+                  color: Theme.of(context).primaryColor,
+                  onPressed: _loading ? null : _generate,
+                ),
+              ],
+            ),
+          ),
+        ],
       ),
     );
   }

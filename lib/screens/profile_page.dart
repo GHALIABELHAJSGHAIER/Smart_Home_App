@@ -922,9 +922,8 @@ class _ProfilePageState extends State<ProfilePage>
           ),
           // Positionnement de l'icône chat animée
           Positioned(
-            top: -200,
             right: 20,
-            bottom: 40, // Juste au-dessus du BottomAppBar
+            bottom: 20,
             child: GestureDetector(
               onTap: () {
                 Navigator.push(
@@ -932,33 +931,24 @@ class _ProfilePageState extends State<ProfilePage>
                   MaterialPageRoute(builder: (context) => GeminiPage()),
                 );
               },
-              child: AnimatedBuilder(
-                animation: _animationController,
-                builder: (context, child) {
-                  return Transform.scale(
-                    scale: _animationScale.value,
-                    child: child,
-                  );
-                },
-                child: Container(
-                  decoration: BoxDecoration(
-                    color: Colors.blueAccent,
-                    shape: BoxShape.circle,
-                    boxShadow: [
-                      BoxShadow(
-                        // ignore: deprecated_member_use
-                        color: Colors.blueAccent.withOpacity(0.6),
-                        blurRadius: 10,
-                        spreadRadius: 1,
-                      ),
-                    ],
-                  ),
-                  padding: const EdgeInsets.all(12),
-                  child: const Icon(
-                    Icons.chat_bubble,
-                    color: Colors.white,
-                    size: 32,
-                  ),
+              child: Container(
+                width: 56,
+                height: 56,
+                decoration: BoxDecoration(
+                  color: Colors.blueAccent, // Couleur de fond
+                  shape: BoxShape.circle, // Arrondi parfait
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.2),
+                      blurRadius: 6,
+                      offset: const Offset(0, 3),
+                    ),
+                  ],
+                ),
+                child: const Icon(
+                  Icons.chat_bubble,
+                  color: Colors.white,
+                  size: 28,
                 ),
               ),
             ),
