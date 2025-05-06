@@ -9,10 +9,8 @@ class GeminiPage extends StatefulWidget {
 class _GeminiPageState extends State<GeminiPage> {
   final GeminiController _controller = GeminiController();
   final TextEditingController _promptController = TextEditingController();
-  final ScrollController _scrollController = ScrollController();
 
-  List<Map<String, String>> _messages =
-      []; // [{ "role": "user"/"assistant", "text": "..." }]
+  List<Map<String, String>> _messages = [];
   bool _loading = false;
 
   void _generate() async {
@@ -32,17 +30,10 @@ class _GeminiPageState extends State<GeminiPage> {
       });
     } catch (e) {
       setState(() {
-        _messages.add({"role": "assistant", "text": 'Erreur : $e'});
+        _messages.add({"role": "assistant", "text": 'Erreur : \$e'});
       });
     } finally {
       setState(() => _loading = false);
-      Future.delayed(Duration(milliseconds: 300), () {
-        _scrollController.animateTo(
-          _scrollController.position.maxScrollExtent,
-          duration: Duration(milliseconds: 300),
-          curve: Curves.easeOut,
-        );
-      });
     }
   }
 
@@ -51,18 +42,34 @@ class _GeminiPageState extends State<GeminiPage> {
     return Align(
       alignment: isUser ? Alignment.centerRight : Alignment.centerLeft,
       child: Container(
-        margin: EdgeInsets.symmetric(vertical: 4),
-        padding: EdgeInsets.all(12),
+        margin: EdgeInsets.symmetric(vertical: 6, horizontal: 8),
+        padding: EdgeInsets.all(14),
         constraints: BoxConstraints(
           maxWidth: MediaQuery.of(context).size.width * 0.75,
         ),
         decoration: BoxDecoration(
-          color: isUser ? Colors.blueAccent : Colors.grey[300],
-          borderRadius: BorderRadius.circular(16),
+          color:
+              isUser ? Color(0xFF4A90E2) : Color.fromARGB(255, 193, 190, 190),
+          borderRadius: BorderRadius.only(
+            topLeft: Radius.circular(16),
+            topRight: Radius.circular(16),
+            bottomLeft: Radius.circular(isUser ? 16 : 0),
+            bottomRight: Radius.circular(isUser ? 0 : 16),
+          ),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black12,
+              blurRadius: 4,
+              offset: Offset(2, 2),
+            ),
+          ],
         ),
         child: Text(
           text,
-          style: TextStyle(color: isUser ? Colors.white : Colors.black87),
+          style: TextStyle(
+            color: isUser ? Colors.white : Colors.black87,
+            fontSize: 16,
+          ),
         ),
       ),
     );
@@ -71,49 +78,64 @@ class _GeminiPageState extends State<GeminiPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("Chat Gemini")),
+      backgroundColor: Color(0xFFEFEFEF),
+      appBar: AppBar(
+        backgroundColor: Colors.white,
+        elevation: 2,
+        title: Text(
+          "\uD83D\uDCAC Gemini Chat",
+          style: TextStyle(color: Colors.black),
+        ),
+        centerTitle: true,
+        iconTheme: IconThemeData(color: Colors.black),
+      ),
       body: Column(
         children: [
           Expanded(
-            child: SingleChildScrollView(
-              controller: _scrollController,
-              padding: EdgeInsets.all(16),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children:
-                    _messages.map((message) {
-                      return _buildMessageBubble(
-                        message["role"]!,
-                        message["text"]!,
-                      );
-                    }).toList(),
-              ),
+            child: ListView.builder(
+              padding: EdgeInsets.symmetric(vertical: 16),
+              itemCount: _messages.length + (_loading ? 1 : 0),
+              itemBuilder: (context, index) {
+                if (_loading && index == _messages.length) {
+                  return _buildMessageBubble("assistant", "...");
+                }
+                final message = _messages[index];
+                return _buildMessageBubble(message["role"]!, message["text"]!);
+              },
             ),
           ),
-          if (_loading)
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: CircularProgressIndicator(),
-            ),
           Divider(height: 1),
           Container(
-            padding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
             color: Colors.white,
+            padding: EdgeInsets.symmetric(horizontal: 12, vertical: 10),
             child: Row(
               children: [
                 Expanded(
-                  child: TextField(
-                    controller: _promptController,
-                    decoration: InputDecoration.collapsed(
-                      hintText: "Écris ton message...",
+                  child: Container(
+                    padding: EdgeInsets.symmetric(horizontal: 14),
+                    decoration: BoxDecoration(
+                      color: Color(0xFFF7F7F7),
+                      borderRadius: BorderRadius.circular(30),
+                      border: Border.all(color: Colors.grey.shade300),
                     ),
-                    onSubmitted: (_) => _generate(),
+                    child: TextField(
+                      controller: _promptController,
+                      decoration: InputDecoration(
+                        hintText: "\u00c9cris ton message...",
+                        border: InputBorder.none,
+                      ),
+                      onSubmitted: (_) => _generate(),
+                    ),
                   ),
                 ),
-                IconButton(
-                  icon: Icon(Icons.send),
-                  color: Theme.of(context).primaryColor,
-                  onPressed: _loading ? null : _generate,
+                SizedBox(width: 8),
+                GestureDetector(
+                  onTap: _loading ? null : _generate,
+                  child: CircleAvatar(
+                    backgroundColor:
+                        _loading ? Colors.grey : Theme.of(context).primaryColor,
+                    child: Icon(Icons.send, color: Colors.white),
+                  ),
                 ),
               ],
             ),

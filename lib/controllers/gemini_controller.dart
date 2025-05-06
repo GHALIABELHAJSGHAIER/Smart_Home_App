@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'package:clone_spotify_mars/config.dart';
 import 'package:clone_spotify_mars/models/gemini_model.dart';
+
 import 'package:http/http.dart' as http;
 
 class GeminiController {

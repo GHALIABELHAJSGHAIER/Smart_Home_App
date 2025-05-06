@@ -1,6 +1,6 @@
-const url = 'http://10.0.2.2:5000/';
+//const url = 'http://10.0.2.2:5000/';
 //192.168.0.79
-//const url = 'http://192.168.0.79:5000/';
+const url = 'http://192.168.100.106:5000/';
 //Auth
 //const register = "${url}auth/registration";
 const register = "${url}users/addUserClient/";
