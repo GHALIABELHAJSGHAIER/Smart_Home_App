@@ -20,3 +20,11 @@ const deleteespace = "${url}espaces/deleteEspaceById";
 const updateespace = "${url}espaces/updateEspace";
 //gemini
 const gemini = "${url}gemini/generate";
+//cuisine
+const addCuisine = "${url}espaces/addEspaceForMaison";
+const getRelayCuisine = "${url}cuisines/getRelay";
+const updatecuisine = "${url}cuisines/updateCuisine";
+/////
+const updateRelayById = "${url}cuisines/updateRelay";
+const getCuisineById = "${url}cuisines/getCuisineById";
+//const deleteespace = "${url}espaces/deleteEspaceById";

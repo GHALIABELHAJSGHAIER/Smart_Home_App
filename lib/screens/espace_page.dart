@@ -582,10 +582,11 @@ class _EspacePageState extends State<EspacePage> {
                                 case "cuisine":
                                   Navigator.push(
                                     context,
+                                    
                                     MaterialPageRoute(
                                       builder:
                                           (_) =>
-                                              PageCuisine(espaceId: espace.id),
+                                              PageCuisine(espaceId: espace.id,),
                                     ),
                                   );
                                   break;
