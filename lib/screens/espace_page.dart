@@ -616,16 +616,21 @@ class _EspacePageState extends State<EspacePage> {
                                   );
                               }
                             },
-
                             leading: const CircleAvatar(
                               radius: 40,
                               backgroundImage: AssetImage("assets/maison.png"),
                               backgroundColor: Color.fromARGB(0, 255, 236, 236),
                             ),
-                            title: Text(espace.nom ?? ''),
-                            subtitle: Text(espace.type ?? ''),
+                            title: Text(
+                              espace.nom ?? '',
+                              style: const TextStyle(color: Colors.white),
+                            ),
+                            subtitle: Text(
+                              espace.type ?? '',
+                              style: const TextStyle(color: Colors.white70),
+                            ),
                             trailing: Wrap(
-                              spacing: 10,
+                              spacing: 5,
                               children: [
                                 IconButton(
                                   icon: const Icon(
