@@ -11,15 +11,17 @@ class EspaceModel {
   String id;
   String maisonId;
   String nom;
+  String type;
 
   // Constructeur
-  EspaceModel({required this.id, required this.maisonId, required this.nom});
+  EspaceModel({required this.id, required this.maisonId, required this.nom, required this.type});
 
   // Factory pour créer une instance d'EspaceModel à partir d'un Map JSON
   factory EspaceModel.fromJson(Map<String, dynamic> json) => EspaceModel(
     id: json["_id"] ?? '', // Valeur par défaut si _id est null
     maisonId: json["maisonId"] ?? '', // Valeur par défaut si maisonId est null
     nom: json["nom"] ?? 'Nom inconnu', // Valeur par défaut si nom est null
+    type: json["type"] ?? 'Type inconnu',
   );
 
   // Méthode toJson pour convertir l'objet EspaceModel en JSON
@@ -27,5 +29,6 @@ class EspaceModel {
     "_id": id,
     "maisonId": maisonId,
     "nom": nom,
+    "type": type,
   };
 }
