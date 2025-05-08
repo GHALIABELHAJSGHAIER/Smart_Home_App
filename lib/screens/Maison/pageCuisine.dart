@@ -12,7 +12,7 @@
 //     final controller = Get.put(CuisineController());
 
 //     // Initialiser l'ID de l’espace
-//     controller.setCuisineId(espaceId);
+//     //controller.setCuisineId(espaceId);
 
 //     return Scaffold(
 //       appBar: AppBar(title: Text("Cuisine - $espaceId")),
@@ -56,9 +56,172 @@
 //     );
 //   }
 // }
+//////////////////////////////////////2222222
 
-///////////////////////
+// import 'package:clone_spotify_mars/controllers/cuisine_controller.dart';
+// import 'package:flutter/material.dart';
+// import 'package:get/get.dart';
+// import 'package:google_fonts/google_fonts.dart';
+// import 'package:clone_spotify_mars/smart_device_box.dart';
+
+// class PageCuisine extends StatefulWidget {
+//   const PageCuisine({super.key, required this.espaceId});
+
+//   final String espaceId;
+
+//   @override
+//   State<PageCuisine> createState() => _PageCuisineState();
+// }
+
+// class _PageCuisineState extends State<PageCuisine> {
+//   late final CuisineController controller;
+
+//   final double horizontalPadding = 30;
+//   final double verticalPadding = 10;
+
+//   final List mySmartDevices = [
+//     ["Smart Light", "assets/light.svg", false],
+//     ["Smart AC", "assets/aircondition.svg", false],
+//     ["Smart TV", "assets/tv.svg", false],
+//     ["Smart Fan", "assets/fan.svg", false],
+//   ];
+
+//   void powerSwitchChanged(bool value, int index) {
+//     setState(() {
+//       mySmartDevices[index][2] = value;
+//     });
+
+//     if (index == 0) {
+//       //controller.updateRelay();
+//       print("hi");
+//     }
+//   }
+
+//   @override
+//   void initState() {
+//     super.initState();
+//     controller = Get.put(CuisineController(espaceId: widget.espaceId));
+//   }
+
+//   @override
+//   Widget build(BuildContext context) {
+//     return SafeArea(
+//       child: Scaffold(
+//         backgroundColor: Colors.grey[300],
+//         body: Obx(() {
+//           if (controller.cuisines.isNotEmpty) {
+//             final cuisine = controller.cuisines.first;
+
+//             return Column(
+//               crossAxisAlignment: CrossAxisAlignment.start,
+//               children: [
+//                 // Barre d'application
+//                 Padding(
+//                   padding: EdgeInsets.symmetric(
+//                     horizontal: horizontalPadding,
+//                     vertical: verticalPadding,
+//                   ),
+//                   child: Row(
+//                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+//                     children: [
+//                       Image.asset("assets/menu.png", height: 35),
+//                       Icon(Icons.person, size: 45, color: Colors.grey[800]),
+//                     ],
+//                   ),
+//                 ),
+
+//                 // Message de bienvenue
+//                 Padding(
+//                   padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
+//                   child: Column(
+//                     crossAxisAlignment: CrossAxisAlignment.start,
+//                     children: [
+//                       Text(
+//                         "Bienvenue chez vous",
+//                         style: TextStyle(fontSize: 20, color: Colors.grey[700]),
+//                       ),
+//                       Text(
+//                         "YAHYA CH",
+//                         style: GoogleFonts.bebasNeue(fontSize: 50),
+//                       ),
+//                     ],
+//                   ),
+//                 ),
+
+//                 // Séparateur
+//                 Padding(
+//                   padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
+//                   child: Divider(color: Colors.grey[800], thickness: 1),
+//                 ),
+
+//                 // Titre
+//                 Padding(
+//                   padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
+//                   child: Text(
+//                     "Appareils Intelligents",
+//                     style: TextStyle(
+//                       fontWeight: FontWeight.bold,
+//                       fontSize: 24,
+//                       color: Colors.grey[800],
+//                     ),
+//                   ),
+//                 ),
+
+//                 // Données flamme et gaz
+//                 Padding(
+//                   padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
+//                   child: Text(
+//                     "gaz = ${cuisine.gaz}",
+//                     style: TextStyle(fontSize: 20, color: Colors.grey[700]),
+//                   ),
+//                 ),
+//                 Padding(
+//                   padding: EdgeInsets.symmetric(horizontal: horizontalPadding),
+//                   child: Text(
+//                     "flamme = ${cuisine.flamme}",
+//                     style: TextStyle(fontSize: 20, color: Colors.grey[700]),
+//                   ),
+//                 ),
+
+//                 // Grille d'appareils
+//                 Expanded(
+//                   child: GridView.builder(
+//                     itemCount: mySmartDevices.length,
+//                     padding: const EdgeInsets.all(15),
+//                     gridDelegate:
+//                         const SliverGridDelegateWithFixedCrossAxisCount(
+//                           crossAxisCount: 2,
+//                           childAspectRatio: 1 / 1.2,
+//                         ),
+//                     itemBuilder: (context, index) {
+//                       return SmartDeviceBox(
+//                         smartDeviceName: mySmartDevices[index][0],
+//                         iconPath: mySmartDevices[index][1],
+//                         powerOn: mySmartDevices[index][2],
+//                         onChanged: (value) {
+//                           powerSwitchChanged(value, index);
+//                         },
+//                       );
+//                     },
+//                   ),
+//                 ),
+//               ],
+//             );
+//           } else {
+//             return const Center(child: CircularProgressIndicator());
+//           }
+//         }),
+//       ),
+//     );
+//   }
+// }
+
+///////////////////////3333333
+import 'dart:convert';
+
+import 'package:clone_spotify_mars/models/cuisine_model.dart';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 
 class PageCuisine extends StatelessWidget {
   final String espaceId;

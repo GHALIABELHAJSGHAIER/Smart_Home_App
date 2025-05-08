@@ -25,6 +25,7 @@ const addCuisine = "${url}espaces/addEspaceForMaison";
 const getRelayCuisine = "${url}cuisines/getRelay";
 const updatecuisine = "${url}cuisines/updateCuisine";
 /////
-const updateRelayById = "${url}cuisines/updateRelay";
-const getCuisineById = "${url}cuisines/getCuisineById";
+//const updateRelayById = "${url}cuisines/updateRelay";
+//const getCuisineById = "${url}cuisines/getCuisineById";
+const getCuisineByIdespace = "${url}cuisines/getCuisineByIdEspace";
 //const deleteespace = "${url}espaces/deleteEspaceById";

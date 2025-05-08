@@ -11,35 +11,40 @@ class CuisineController extends GetxController {
   var cuisineModel = Rxn<CuisineModel>(); // Modèle cuisine observable
   late Timer _timer;
   late String cuisineId;
+  // Liste observable des cuisines
+  var cuisines = <CuisineModel>[].obs;
 
-  // Appelée à l'initialisation du contrôleur
+  // Constructor to receive the espaceId
+  CuisineController({required String espaceId}) {
+    this.cuisineId = espaceId; // Initialize cuisineId here
+  }
+
   @override
   void onInit() {
     super.onInit();
-    // Note : il faut appeler `setCuisineId` avant d'utiliser ce contrôleur
+    // Appel initial pour récupérer les données using the initialized cuisineId
+    getCuisineByIdEspace(cuisineId);
+
+    // Démarrer un timer to periodically fetch data
+    _timer = Timer.periodic(
+      const Duration(seconds: 1),
+      (_) => getCuisineByIdEspace(cuisineId),
+    );
   }
 
-  // Nettoyage à la fermeture
   @override
   void onClose() {
-    _timer.cancel();
     super.onClose();
-  }
-
-  // Setter appelé depuis la page pour initialiser l’ID
-  void setCuisineId(String id) {
-    cuisineId = id;
-    getCuisineById(cuisineId);
-    _timer = Timer.periodic(
-      Duration(seconds: 1),
-      (_) => getCuisineById(cuisineId),
-    );
+    _timer.cancel();
   }
 
   // Récupérer une cuisine par son ID
   Future<void> getCuisineById(String id) async {
+    print("BBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBBB");
+    print("cUISINE Id $id");
     try {
       final response = await http.get(Uri.parse("$getCuisineById/$id"));
+      // print(response.body);
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
         cuisineModel.value = CuisineModel.fromJson(data['success']);
@@ -52,26 +57,50 @@ class CuisineController extends GetxController {
   }
 
   // Mettre à jour l'état du relais
-  Future<void> updateRelay() async {
-    try {
-      if (cuisineModel.value != null) {
-        bool newRelayState = !cuisineModel.value!.relayInc;
-        final response = await http.put(
-          Uri.parse("$updateRelayById/${cuisineModel.value!.id}"),
-          headers: {"Content-Type": "application/json"},
-          body: jsonEncode({"relayInc": newRelayState}),
-        );
+  // Future<void> updateRelay() async {
+  //   try {
+  //     if (cuisineModel.value != null) {
+  //       bool newRelayState = !cuisineModel.value!.relayInc;
+  //       final response = await http.put(
+  //         Uri.parse("$updateRelayById/${cuisineModel.value!.id}"),
+  //         headers: {"Content-Type": "application/json"},
+  //         body: jsonEncode({"relayInc": newRelayState}),
+  //       );
 
-        if (response.statusCode == 200) {
-          print("Relay mis à jour !");
-          // Rafraîchir les données
-          getCuisineById(cuisineModel.value!.id);
-        } else {
-          print("Erreur updateRelay: ${response.body}");
-        }
+  //       if (response.statusCode == 200) {
+  //         print("Relay mis à jour !");
+  //         // Rafraîchir les données
+  //         getCuisineById(cuisineModel.value!.id);
+  //       } else {
+  //         print("Erreur updateRelay: ${response.body}");
+  //       }
+  //     }
+  //   } catch (e) {
+  //     print("Exception dans updateRelay: $e");
+  //   }
+  // }
+
+  // Récupérer toutes les cuisines liées à un espace
+  Future<void> getCuisineByIdEspace(String espaceId) async {
+    final uri = Uri.parse("$getCuisineByIdespace/$espaceId");
+    //    final uri = Uri.parse(
+    //   'http://192.168.100.106:5000/cuisines/getCuisineByIdEspace/$espaceId',
+    // );
+    print("URI appelée : $uri");
+
+    try {
+      final response = await http.get(uri);
+
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body);
+        List<dynamic> cuisinesJson = data['success'];
+        cuisines.value =
+            cuisinesJson.map((json) => CuisineModel.fromJson(json)).toList();
+      } else {
+        print("Erreur getCuisineByIdEspace: ${response.body}");
       }
     } catch (e) {
-      print("Exception dans updateRelay: $e");
+      print("Exception dans getCuisineByIdEspace: $e");
     }
   }
 

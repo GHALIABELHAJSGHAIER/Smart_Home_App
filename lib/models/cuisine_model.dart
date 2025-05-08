@@ -15,7 +15,7 @@ class CuisineModel {
   String id;
   String espaceId;
   bool relayInc;
-  int flamme;
+  double flamme;
   int gaz;
 
   CuisineModel({
@@ -30,7 +30,7 @@ class CuisineModel {
     id: json["_id"],
     espaceId: json["espaceId"],
     relayInc: json["relayInc"],
-    flamme: json["flamme"],
+    flamme: json["flamme"].toDouble(),
     gaz: json["gaz"],
   );
 
