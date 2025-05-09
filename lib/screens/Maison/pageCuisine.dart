@@ -1,6 +1,5 @@
 // import 'dart:convert';
 
-// import 'package:clone_spotify_mars/models/cuisine_model.dart';
 // import 'package:flutter/material.dart';
 // import 'package:http/http.dart' as http;
 
@@ -17,7 +16,8 @@
 //     );
 //   }
 // }
-import 'package:clone_spotify_mars/controllers/cuisine_controller.dart';
+
+import 'package:clone_spotify_mars/controllers/Maison/cuisine_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 

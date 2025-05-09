@@ -1,6 +1,6 @@
 //const url = 'http://10.0.2.2:5000/';
 //192.168.100.106
-const url = 'http://192.168.100.106:5000/';
+const url = 'http://192.168.1.102:5000/';
 //Auth
 //const register = "${url}auth/registration";
 const register = "${url}users/addUserClient/";
@@ -21,13 +21,9 @@ const updateespace = "${url}espaces/updateEspace";
 //gemini
 const gemini = "${url}gemini/generate";
 //cuisine
-// const addCuisine = "${url}espaces/addEspaceForMaison";
-// const getRelayCuisine = "${url}cuisines/getRelay";
-// const updatecuisine = "${url}cuisines/updateCuisine";
-/////
+
 const getCuisineByIdespace = "${url}cuisines/getCuisineByIdEspace";
 const updateRelayByIdCuisine = "${url}cuisines/updateRelayByIdCuisine";
-
-//const getCuisineById = "${url}cuisines/getCuisineById";
-
-//const deleteespace = "${url}espaces/deleteEspaceById";
+//wc
+const getWccByIdEspace = "${url}wcs/getWcByIdEspace/";
+const updateRelayByIdWc = "${url}wcs/updateRelayByIdWc";
