@@ -2,7 +2,7 @@ import 'dart:async';
 import 'dart:convert';
 import 'package:clone_spotify_mars/config.dart';
 import 'package:clone_spotify_mars/models/Maison/salon_model.dart';
- 
+
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 
@@ -32,14 +32,16 @@ class SalonController extends GetxController {
     try {
       final response = await http.get(
         Uri.parse("http://192.168.100.106:5000/salons/getSalonByIdEspace/$id"),
+        // Uri.parse("$getSalonByIdEspace/$id"),
       );
 
       if (response.statusCode == 200) {
         final body = jsonDecode(response.body);
         if (body['success'] != null && body['success'] is List) {
-          List<SalonModel> result = (body['success'] as List)
-              .map((item) => SalonModel.fromJson(item))
-              .toList();
+          List<SalonModel> result =
+              (body['success'] as List)
+                  .map((item) => SalonModel.fromJson(item))
+                  .toList();
           salons.assignAll(result);
         }
       } else {
@@ -58,7 +60,8 @@ class SalonController extends GetxController {
   }) async {
     try {
       final response = await http.put(
-        Uri.parse("http://192.168.100.106:5000/salons/updateRelayByIdSalon/$id"),
+        //Uri.parse("http://192.168.100.106:5000/salons/updateRelayByIdSalon/$id"),
+        Uri.parse("$updateRelayByIdSalon/$id"),
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode({
           'relayOpenWindow': relayOpenWindow,
