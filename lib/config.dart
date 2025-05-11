@@ -7,6 +7,7 @@ const url = 'http://192.168.100.106:5000/';
 const register = "${url}users/addUserClient/";
 const login = "${url}users/login";
 const getuserbyid = "${url}users/getUserById";
+const updateUserById = "${url}users/updateUserById";
 
 //maison
 const addMaison = "${url}maisons/addMaisonForClient";
@@ -28,6 +29,10 @@ const updateRelayByIdCuisine = "${url}cuisines/updateRelayByIdCuisine";
 //wc
 const getWccByIdEspace = "${url}wcs/getWcByIdEspace/";
 const updateRelayByIdWc = "${url}wcs/updateRelayByIdWc";
-//salon 
+//salon
 const getSalonByIdEspace = "${url}salons/getSalonByIdEspace/";
 const updateRelayByIdSalon = "${url}salons/updateRelayByIdSalon";
+//chambre
+
+const getChambreByIdEspace = "${url}chambres/getChambreByIdEspace";
+const updateRelayByIdChambre = "${url}chambres/updateRelayByIdChambre";

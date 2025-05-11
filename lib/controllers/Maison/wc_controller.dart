@@ -48,7 +48,7 @@ class WcController extends GetxController {
         print("Réponse du serveur : $body");
         if (body['success'] != null && body['success'] is List) {
           List<dynamic> data = body['success'];
-          if (data != null && data.isNotEmpty) {
+          if (data.isNotEmpty && data.isNotEmpty) {
             List<WcModel> result =
                 data.map((item) {
                   return WcModel.fromJson(item);

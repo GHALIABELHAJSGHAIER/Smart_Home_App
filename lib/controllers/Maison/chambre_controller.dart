@@ -2,14 +2,14 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'dart:convert';
 import 'package:clone_spotify_mars/config.dart';
-import 'package:clone_spotify_mars/models/Maison/cuisine_model.dart';
+import 'package:clone_spotify_mars/models/Maison/chambre_model.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
 
-class CuisineController extends GetxController {
-  static CuisineController get instance => Get.find();
+class ChambreController extends GetxController {
+  static ChambreController get instance => Get.find();
 
-  RxList<CuisineModel> cuisines = <CuisineModel>[].obs;
+  RxList<ChambreModel> chambres = <ChambreModel>[].obs;
   late Timer _timer;
 
   String espaceId = "";
@@ -23,27 +23,33 @@ class CuisineController extends GetxController {
   void _fetchDataPeriodically() {
     _timer = Timer.periodic(
       Duration(seconds: 10),
-      (_) => getCuisineByIdEspace(espaceId),
+      (_) => getChambreByIdEspace(espaceId),
     );
   }
 
-  Future<void> getCuisineByIdEspace(String id) async {
+  Future<void> getChambreByIdEspace(String id) async {
     espaceId = id;
     print("aaaaaaaa");
     print(espaceId);
     try {
-      final response = await http.get(Uri.parse("$getCuisineByIdespace/$id"));
+      //final response = await http.get(Uri.parse("$getChambreByIdEspace/$id"));
+      final response = await http.get(
+        Uri.parse(
+          "http://192.168.100.106:5000/chambres/getChambreByIdEspace/$id",
+        ),
+        // Uri.parse("$getSalonByIdEspace/$id"),
+      );
       if (response.statusCode == 200) {
         final body = jsonDecode(response.body);
         print("Réponse du serveur : $body");
         if (body['success'] != null && body['success'] is List) {
           List<dynamic> data = body['success'];
           if (data.isNotEmpty && data.isNotEmpty) {
-            List<CuisineModel> result =
+            List<ChambreModel> result =
                 data.map((item) {
-                  return CuisineModel.fromJson(item);
+                  return ChambreModel.fromJson(item);
                 }).toList();
-            cuisines.assignAll(result);
+            chambres.assignAll(result);
           } else {
             debugPrint("Aucune donnée dans 'success'.");
           }
@@ -59,24 +65,38 @@ class CuisineController extends GetxController {
   }
 
   // Fonction pour mettre à jour relayInc
-  Future<void> updateRelayStatus(String id, bool relayInc) async {
+  Future<void> updateRelayStatus(
+    String id,
+    bool relayOpenWindow,
+    bool relayCloseWindow,
+    bool relayClim,
+    bool relayLamp,
+  ) async {
     try {
       final response = await http.put(
-        Uri.parse("$updateRelayByIdCuisine/$id"),
+        Uri.parse("$updateRelayByIdChambre/$id"),
         headers: {'Content-Type': 'application/json'},
-        body: jsonEncode({'relayInc': relayInc}),
+        body: jsonEncode({
+          'relayOpenWindow': relayOpenWindow,
+          'relayCloseWindow': relayCloseWindow,
+          'relayClim': relayClim,
+          'relayLamp': relayLamp,
+        }),
       );
 
       if (response.statusCode == 200) {
         final body = jsonDecode(response.body);
         if (body['status'] == true) {
           // Trouver la cuisine et mettre à jour l'état relayInc localement
-          final updatedCuisine = cuisines.firstWhere(
-            (cuisine) => cuisine.id == id,
+          final updatedChambre = chambres.firstWhere(
+            (chambre) => chambre.id == id,
           );
-          updatedCuisine.relayInc = relayInc;
-          cuisines.refresh();
-          debugPrint("Mise à jour réussie : ${updatedCuisine.relayInc}");
+          updatedChambre.relayOpenWindow = relayOpenWindow;
+          updatedChambre.relayCloseWindow = relayCloseWindow;
+          updatedChambre.relayClim = relayClim;
+          updatedChambre.relayLamp = relayLamp;
+          chambres.refresh();
+          //debugPrint("Mise à jour réussie : ${updatedChambre.relayInc}");
         } else {
           debugPrint("Erreur lors de la mise à jour : ${body['message']}");
         }

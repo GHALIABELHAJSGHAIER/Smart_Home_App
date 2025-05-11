@@ -54,20 +54,17 @@ class AuthController extends GetxController {
 
   Future<List<UserModel>> getUserById(String id) async {
     try {
-      // Faire la requête GET à l'API
-      var response = await http.get(
-        Uri.parse('$getuserbyid/$id'),
-        headers: {"Content-Type": "application/json"},
-      );
+      final response = await http.get(Uri.parse('$getuserbyid/$id'));
+
       print("Réponse du backend : ${response.body}");
-      // Vérifier si la requête a réussitry {
+
       if (response.statusCode == 200) {
         var jsonResponse = jsonDecode(response.body);
 
-        if (jsonResponse['status'] == true) {
-          return (jsonResponse['success'] as List)
-              .map((user) => UserModel.fromJson(user))
-              .toList();
+        // Modification ici - la réponse contient un objet 'user' et non 'success'
+        if (jsonResponse['user'] != null) {
+          // Retourne une liste avec un seul utilisateur
+          return [UserModel.fromJson(jsonResponse['user'])];
         } else {
           return [];
         }
@@ -75,7 +72,44 @@ class AuthController extends GetxController {
         throw Exception("Failed to load data: ${response.statusCode}");
       }
     } catch (e) {
+      print("Erreur lors de la récupération de l'utilisateur: $e");
       return [];
+    }
+  }
+
+  Future<Map<String, dynamic>> updateUserById(
+    String id,
+    UserModel updatedUser,
+  ) async {
+    try {
+      final response = await http.put(
+        Uri.parse(
+          '$updateUserById/$id',
+        ), // Assure-toi que cette URL correspond à ta route
+        headers: {"Content-Type": "application/json"},
+        body: jsonEncode({
+          "email": updatedUser.email,
+          "username": updatedUser.username,
+        }),
+      );
+
+      print("Réponse du backend (update) : ${response.body}");
+
+      if (response.statusCode == 200) {
+        final jsonResponse = jsonDecode(response.body);
+        return {
+          "status": true,
+          "updated": UserModel.fromJson(jsonResponse['updated']),
+        };
+      } else {
+        final jsonResponse = jsonDecode(response.body);
+        return {
+          "status": false,
+          "error": jsonResponse['message'] ?? "Erreur lors de la mise à jour",
+        };
+      }
+    } catch (e) {
+      return {"status": false, "error": "Exception: ${e.toString()}"};
     }
   }
 }
