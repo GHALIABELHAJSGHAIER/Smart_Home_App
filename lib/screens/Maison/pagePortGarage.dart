@@ -1,86 +1,166 @@
-import 'package:clone_spotify_mars/controllers/Maison/portGarage_controller.dart';
+
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:lucide_icons/lucide_icons.dart'; // Facultatif si tu veux des icônes modernes
+import 'package:intl/intl.dart';
+import 'package:clone_spotify_mars/controllers/Maison/portGarage_controller.dart';
+//import 'package:clone_spotify_mars/models/Maison/portGarage_model.dart';
 
-class PortGaragePage extends StatelessWidget {
+class PortGaragePage extends StatefulWidget {
   final String clientId;
 
   const PortGaragePage({Key? key, required this.clientId}) : super(key: key);
 
   @override
-  Widget build(BuildContext context) {
-    final portGarageController = Get.put(PortgarageController());
-    portGarageController.getPortGarageByIdClient(clientId);
+  _PortGaragePageState createState() => _PortGaragePageState();
+}
 
+class _PortGaragePageState extends State<PortGaragePage> {
+  final PortgarageController portGarageController = Get.put(
+    PortgarageController(),
+  );
+  String? selectedGarageId;
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      portGarageController.getPortGarageByIdClient(widget.clientId);
+    });
+  }
+
+  void _showHistoryBottomSheet(BuildContext context, String garageId) {
+    final controller = Get.find<PortgarageController>();
+    controller.getHistoriqueByGarageId(garageId);
+    showModalBottomSheet(
+      context: context,
+      builder: (context) {
+        return Obx(() {
+          final historique =
+              controller.historique
+                  .where((h) => h.garageId == garageId)
+                  .toList()
+                ..sort((a, b) => b.date.compareTo(a.date));
+
+          return AlertDialog(
+            title: const Text("Historique"),
+            content: Container(
+              width: double.maxFinite,
+              child:
+                  historique.isEmpty
+                      ? const Text("Aucun historique disponible")
+                      : ListView.builder(
+                        shrinkWrap: true,
+                        itemCount: historique.length,
+                        itemBuilder: (context, index) {
+                          final item = historique[index];
+                          return ListTile(
+                            leading: Icon(
+                              item.etat ? Icons.lock_open : Icons.lock,
+                              color: item.etat ? Colors.green : Colors.red,
+                            ),
+                            title: Text(item.etat ? "Ouvert" : "Fermé"),
+                            subtitle: Text(
+                              DateFormat('dd/MM HH:mm').format(item.date),
+                            ),
+                          );
+                        },
+                      ),
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(context),
+                child: const Text("Fermer"),
+              ),
+            ],
+          );
+        });
+      },
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
         title: const Text("Mes portes de garage"),
         centerTitle: true,
-        backgroundColor: Colors.blueGrey[900],
-        foregroundColor: Colors.white,
-        elevation: 4,
+        actions: [
+          IconButton(
+            icon: const Icon(Icons.refresh),
+            onPressed: () {
+              portGarageController.getPortGarageByIdClient(widget.clientId);
+            },
+          ),
+        ],
       ),
       body: Obx(() {
         if (portGarageController.garages.isEmpty) {
-          return Center(
-            child:
-                portGarageController.garages.isEmpty
-                    ? const CircularProgressIndicator() // Indicateur de chargement
-                    : const Text(
-                      "Aucune porte disponible.",
-                      style: TextStyle(
-                        fontSize: 16,
-                        fontStyle: FontStyle.italic,
-                      ),
-                    ),
-          );
+          return const Center(child: CircularProgressIndicator());
         }
 
         return ListView.builder(
-          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+          padding: const EdgeInsets.all(16),
           itemCount: portGarageController.garages.length,
           itemBuilder: (context, index) {
             final garage = portGarageController.garages[index];
-
             return Card(
-              elevation: 8,
-              margin: const EdgeInsets.symmetric(vertical: 12),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(16),
-              ),
-              shadowColor: Colors.grey.withOpacity(0.5),
-              child: ListTile(
-                contentPadding: const EdgeInsets.symmetric(
-                  horizontal: 20,
-                  vertical: 12,
-                ),
-                leading: Icon(
-                  garage.portGarage
-                      ? Icons.garage_outlined
-                      : Icons.garage_rounded,
-                  size: 40,
-                  color: garage.portGarage ? Colors.green : Colors.redAccent,
-                ),
-
-                subtitle: Text(
-                  "La porte de garage est ${garage.portGarage ? "ouverte" : "fermée"}",
-                  style: TextStyle(
-                    color: garage.portGarage ? Colors.green : Colors.red,
-                    fontSize: 14,
-                    fontStyle: FontStyle.italic,
-                  ),
-                ),
-                trailing: Switch.adaptive(
-                  activeColor: Colors.green,
-                  inactiveThumbColor: Colors.grey,
-                  value: garage.portGarage,
-                  onChanged: (value) {
-                    portGarageController.updatePortGarageByIdGarage(
-                      garage.id,
-                      value,
-                    );
-                  },
+              elevation: 4,
+              margin: const EdgeInsets.only(bottom: 16),
+              child: Padding(
+                padding: const EdgeInsets.all(12),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Row(
+                          children: [
+                            Icon(
+                              Icons.garage,
+                              size: 30,
+                              color:
+                                  garage.portGarage ? Colors.green : Colors.red,
+                            ),
+                            const SizedBox(width: 10),
+                            Text(
+                              "Porte de garage #${index + 1}",
+                              style: const TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ],
+                        ),
+                        Switch(
+                          value: garage.portGarage,
+                          onChanged: (value) {
+                            portGarageController.updatePortGarageByIdGarage(
+                              garage.id,
+                              value,
+                            );
+                          },
+                          activeColor: Colors.green,
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 8),
+                    Text(
+                      "État: ${garage.portGarage ? "Ouvert" : "Fermé"}",
+                      style: TextStyle(
+                        color: garage.portGarage ? Colors.green : Colors.red,
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    Align(
+                      alignment: Alignment.centerRight,
+                      child: TextButton(
+                        onPressed:
+                            () => _showHistoryBottomSheet(context, garage.id),
+                        child: const Text("Voir l'historique"),
+                      ),
+                    ),
+                  ],
                 ),
               ),
             );

@@ -1,7 +1,8 @@
 import 'dart:async';
+import 'package:clone_spotify_mars/models/Maison/historiqueGarage_model.dart';
 import 'package:flutter/material.dart';
 import 'dart:convert';
-import 'package:clone_spotify_mars/config.dart';
+//import 'package:clone_spotify_mars/config.dart';
 import 'package:clone_spotify_mars/models/Maison/portGarage_model.dart';
 import 'package:get/get.dart';
 import 'package:http/http.dart' as http;
@@ -10,6 +11,8 @@ class PortgarageController extends GetxController {
   static PortgarageController get instance => Get.find();
 
   RxList<PortGarageModel> garages = <PortGarageModel>[].obs;
+  RxList<HistoriqueGarageModel> historique = <HistoriqueGarageModel>[].obs;
+
   late Timer _timer;
 
   String clientId = "";
@@ -29,7 +32,7 @@ class PortgarageController extends GetxController {
 
   Future<void> getPortGarageByIdClient(String id) async {
     clientId = id;
-    print("aaaaaaaa");
+    print("getPortGarageByIdClient WWWWWWWWW");
     print(clientId);
     try {
       //final response = await http.get(Uri.parse("$getPortGarageByIdClient/$id"));
@@ -58,7 +61,7 @@ class PortgarageController extends GetxController {
           debugPrint("La clé 'success' est vide ou mal formée.");
         }
       } else {
-        debugPrint("Erreur: ${response.body}");
+        debugPrint("Réponse historique:: ${response.body}");
       }
     } catch (e) {
       debugPrint("Exception: $e");
@@ -67,6 +70,7 @@ class PortgarageController extends GetxController {
 
   // Fonction pour mettre à jour portGarage
   Future<void> updatePortGarageByIdGarage(String id, bool portGarage) async {
+    print("updatePortGarageByIdGarage");
     try {
       final response = await http.put(
         Uri.parse(
@@ -79,12 +83,23 @@ class PortgarageController extends GetxController {
       if (response.statusCode == 200) {
         final body = jsonDecode(response.body);
         if (body['status'] == true) {
-          // Trouver la garages et mettre à jour l'état portGarage localement
-          final updatedGarage = garages.firstWhere((garage) => garage.id == id);
+          // Créer une nouvelle liste avec l'élément mis à jour
+          final updatedList =
+              garages.map((garage) {
+                if (garage.id == id) {
+                  return PortGarageModel(
+                    id: garage.id,
+                    portGarage: portGarage, // Nouvelle valeur
+                    clientId: garage.clientId,
+                  );
+                }
+                return garage;
+              }).toList();
 
-          updatedGarage.portGarage = portGarage;
-          garages.refresh();
-          debugPrint("Mise à jour réussie : ${updatedGarage.portGarage}");
+          // Mettre à jour la liste observable
+          garages.assignAll(updatedList);
+
+          debugPrint("Mise à jour réussie : $portGarage");
         } else {
           debugPrint("Erreur lors de la mise à jour : ${body['message']}");
         }
@@ -93,6 +108,32 @@ class PortgarageController extends GetxController {
       }
     } catch (e) {
       debugPrint("Exception: $e");
+    }
+  }
+
+  Future<void> getHistoriqueByGarageId(String garageId) async {
+    print("getHistoriqueByGarageId HHHHHHHHHHHHHH");
+    try {
+      final response = await http.get(
+        Uri.parse(
+          "http://192.168.100.106:5000/garages/getHistoriqueByGarageId/$garageId",
+        ),
+      );
+
+      if (response.statusCode == 200) {
+        final body = jsonDecode(response.body);
+
+        if (body['status'] == true && body['historique'] is List) {
+          List<HistoriqueGarageModel> result =
+              (body['historique'] as List)
+                  .map((item) => HistoriqueGarageModel.fromJson(item))
+                  .toList();
+
+          historique.assignAll(result);
+        }
+      }
+    } catch (e) {
+      debugPrint("Erreur getHistoriqueByGarageId: $e");
     }
   }
 
