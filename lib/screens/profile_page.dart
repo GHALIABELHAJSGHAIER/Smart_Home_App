@@ -1,7 +1,8 @@
 import 'package:clone_spotify_mars/controllers/auth_controller.dart';
 import 'package:clone_spotify_mars/models/user_model.dart';
+import 'package:clone_spotify_mars/screens/Maison/pagePortGarage.dart';
 import 'package:clone_spotify_mars/screens/gemini_page.dart';
-import 'package:clone_spotify_mars/screens/open_door_page.dart';
+
 import 'package:clone_spotify_mars/screens/signin_page.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -163,7 +164,8 @@ class _ProfilePageState extends State<ProfilePage> {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (context) => const OpenDoorPage(),
+                          builder:
+                              (context) => PortGaragePage(clientId: clientId),
                         ),
                       );
                     },

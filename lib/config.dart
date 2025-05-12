@@ -36,3 +36,7 @@ const updateRelayByIdSalon = "${url}salons/updateRelayByIdSalon";
 
 const getChambreByIdEspace = "${url}chambres/getChambreByIdEspace";
 const updateRelayByIdChambre = "${url}chambres/updateRelayByIdChambre";
+//garage
+
+const getPortGarageByIdClient = "${url}garages/getPortGarageByIdClient";
+const updatePortGarageByIdGarage = "${url}garages/updatePortGarageByIdGarage";
