@@ -35,7 +35,9 @@ class ChambreController extends GetxController {
       //final response = await http.get(Uri.parse("$getChambreByIdEspace/$id"));
       final response = await http.get(
         Uri.parse(
-          "http://192.168.100.106:5000/chambres/getChambreByIdEspace/$id",
+          "http://192.168.1.102:5000/chambres/getChambreByIdEspace/$id",
+          //          "http://192.168.100.106:5000/chambres/getChambreByIdEspace/$id",
+
         ),
         // Uri.parse("$getSalonByIdEspace/$id"),
       );

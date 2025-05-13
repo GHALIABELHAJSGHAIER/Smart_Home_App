@@ -31,7 +31,8 @@ class SalonController extends GetxController {
     espaceId = id;
     try {
       final response = await http.get(
-        Uri.parse("http://192.168.100.106:5000/salons/getSalonByIdEspace/$id"),
+        Uri.parse("http://192.168.1.102:5000/salons/getSalonByIdEspace/$id"),
+        // Uri.parse("http://192.168.100.106:5000/salons/getSalonByIdEspace/$id"),
         // Uri.parse("$getSalonByIdEspace/$id"),
       );
 
