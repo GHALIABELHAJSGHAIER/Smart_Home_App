@@ -22,7 +22,7 @@ class WcController extends GetxController {
 
   void _fetchDataPeriodically() {
     _timer = Timer.periodic(
-      Duration(seconds: 10),
+      Duration(seconds: 1),
       (_) => getWcByIdEspace(espaceId),
     );
   }

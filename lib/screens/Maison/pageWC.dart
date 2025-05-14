@@ -93,13 +93,13 @@ class PageWc extends StatelessWidget {
                           children: [
                             _buildEnvironmentItem(
                               icon: Icons.thermostat,
-                              value: "${wc.temperature}°C",
+                              value: "${wc.tempWC}°C",
                               label: "Température",
                               color: Colors.red.shade400,
                             ),
                             _buildEnvironmentItem(
                               icon: Icons.water_drop,
-                              value: "${wc.humidity}%",
+                              value: "${wc.humWC}%",
                               label: "Humidité",
                               color: Colors.blue.shade400,
                             ),

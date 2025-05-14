@@ -12,16 +12,16 @@ class WcModel {
   String id;
   bool relaySolarHeat;
   bool relayHeat;
-  double temperature;
-  int humidity;
+  double tempWC;
+  int humWC;
   EspaceModel espace;
 
   WcModel({
     required this.id,
     required this.relaySolarHeat,
     required this.relayHeat,
-    required this.temperature,
-    required this.humidity,
+    required this.tempWC,
+    required this.humWC,
     required this.espace,
   });
 
@@ -29,8 +29,8 @@ class WcModel {
     id: json["_id"],
     relaySolarHeat: json["relaySolarHeat"],
     relayHeat: json["relayHeat"],
-    temperature: json["temperature"]?.toDouble(),
-    humidity: json["humidity"],
+    tempWC: json["tempWC"]?.toDouble(),
+    humWC: json["humWC"],
     espace: EspaceModel.fromJson(json["espace"]),
   );
 
@@ -38,8 +38,8 @@ class WcModel {
     "_id": id,
     "relaySolarHeat": relaySolarHeat,
     "relayHeat": relayHeat,
-    "temperature": temperature,
-    "humidity": humidity,
+    "tempWC": tempWC,
+    "humWC": humWC,
     "espace": espace.toJson(),
   };
 }
