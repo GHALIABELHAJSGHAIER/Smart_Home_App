@@ -35,8 +35,8 @@ class WcController extends GetxController {
       final response = await http.get(
         //192.168.100.106 WIFI OOREDOO
         //192.168.1.102 WIFI NET
-        Uri.parse("http://192.168.1.102:5000/wcs/getWcByIdEspace/$id"),
-        //Uri.parse("http://192.168.100.106:5000/wcs/getWcByIdEspace/$id"),
+        //Uri.parse("http://192.168.1.102:5000/wcs/getWcByIdEspace/$id"),
+        Uri.parse("http://192.168.100.106:5000/wcs/getWcByIdEspace/$id"),
       );
       // final response = await http.get(
       //   Uri.parse(

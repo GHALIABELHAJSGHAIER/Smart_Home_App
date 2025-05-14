@@ -1,7 +1,7 @@
 //const url = 'http://10.0.2.2:5000/';
 //192.168.100.106  wifi ooredoo*
 //192.168.1.102  wifi NET
-const url = 'http://192.168.1.102:5000/';
+const url = 'http://192.168.100.106:5000/';
 //Auth
 //const register = "${url}auth/registration";
 const register = "${url}users/addUserClient/";

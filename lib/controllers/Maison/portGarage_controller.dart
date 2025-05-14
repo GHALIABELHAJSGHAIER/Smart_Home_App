@@ -40,8 +40,8 @@ class PortgarageController extends GetxController {
         //192.168.100.106 WIFI OOREDOO
         //192.168.1.102 WIFI NET
         Uri.parse(
-          "http://192.168.1.102:5000/garages/getPortGarageByIdClient/$id",
-          //"http://192.168.100.106:5000/garages/getPortGarageByIdClient/$id",
+          //"http://192.168.1.102:5000/garages/getPortGarageByIdClient/$id",
+          "http://192.168.100.106:5000/garages/getPortGarageByIdClient/$id",
         ),
       );
       if (response.statusCode == 200) {
@@ -75,8 +75,8 @@ class PortgarageController extends GetxController {
     try {
       final response = await http.put(
         Uri.parse(
-          "http://192.168.1.102:5000/garages/updatePortGarageByIdGarage/$id",
-          //"http://192.168.100.106:5000/garages/updatePortGarageByIdGarage/$id",
+         // "http://192.168.1.102:5000/garages/updatePortGarageByIdGarage/$id",
+          "http://192.168.100.106:5000/garages/updatePortGarageByIdGarage/$id",
         ),
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode({'portGarage': portGarage}),
@@ -118,8 +118,8 @@ class PortgarageController extends GetxController {
     try {
       final response = await http.get(
         Uri.parse(
-          "http://192.168.1.102:5000/garages/getHistoriqueByGarageId/$garageId",
-          //"http://192.168.100.106:5000/garages/getHistoriqueByGarageId/$garageId",
+          //"http://192.168.1.102:5000/garages/getHistoriqueByGarageId/$garageId",
+          "http://192.168.100.106:5000/garages/getHistoriqueByGarageId/$garageId",
         ),
       );
 
