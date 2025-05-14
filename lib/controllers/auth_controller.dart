@@ -77,39 +77,88 @@ class AuthController extends GetxController {
     }
   }
 
-  Future<Map<String, dynamic>> updateUserById(
+  Future<Map<String, dynamic>> updateUserById(String id, UserModel user) async {
+    try {
+      // Vérifier qu'au moins un champ est fourni pour la mise à jour
+      if ((user.email == null || user.email!.isEmpty) &&
+          (user.username == null || user.username!.isEmpty)) {
+        return {"status": false, "error": "Aucune donnée à mettre à jour."};
+      }
+
+      // Créer un corps de requête avec seulement les champs non vides
+      Map<String, dynamic> updateData = {};
+      if (user.email != null && user.email!.isNotEmpty) {
+        updateData['email'] = user.email;
+      }
+      if (user.username != null && user.username!.isNotEmpty) {
+        updateData['username'] = user.username;
+      }
+
+      final response = await http.put(
+        Uri.parse(
+          //"http://192.168.1.102:5000/chambres/getChambreByIdEspace/$id",
+          "http://192.168.100.106:5000/users/updateUserById/$id",
+          //'$updateUserById/$id',
+        ),
+        headers: {"Content-Type": "application/json"},
+        body: jsonEncode(updateData),
+      );
+
+      final jsonResponse = jsonDecode(response.body);
+
+      if (response.statusCode == 200) {
+        return {
+          "status": true,
+          "success": "Utilisateur mis à jour avec succès.",
+          "updatedUser": UserModel.fromJson(jsonResponse['updated']),
+        };
+      } else {
+        return {
+          "status": false,
+          "error": jsonResponse['message'] ?? "Échec de la mise à jour",
+        };
+      }
+    } catch (error) {
+      return {"status": false, "error": error.toString()};
+    }
+  }
+
+  Future<Map<String, dynamic>> updatePassword(
     String id,
-    UserModel updatedUser,
+    String currentPassword,
+    String newPassword,
   ) async {
     try {
       final response = await http.put(
-        Uri.parse(
-          '$updateUserById/$id',
-        ), // Assure-toi que cette URL correspond à ta route
-        headers: {"Content-Type": "application/json"},
+        Uri.parse("http://192.168.100.106:5000/users/updatePassword/$id"),
+        headers: {'Content-Type': 'application/json'},
         body: jsonEncode({
-          "email": updatedUser.email,
-          "username": updatedUser.username,
+          'currentPassword': currentPassword,
+          'newPassword': newPassword,
         }),
       );
 
-      print("Réponse du backend (update) : ${response.body}");
+      final jsonResponse = jsonDecode(response.body);
 
       if (response.statusCode == 200) {
-        final jsonResponse = jsonDecode(response.body);
         return {
           "status": true,
-          "updated": UserModel.fromJson(jsonResponse['updated']),
+          "message":
+              jsonResponse['message'] ?? "Mot de passe mis à jour avec succès",
         };
+      } else if (response.statusCode == 400 &&
+          jsonResponse['message'] == "Mot de passe actuel incorrect") {
+        return {"status": false, "error": "Mot de passe actuel incorrect"};
       } else {
-        final jsonResponse = jsonDecode(response.body);
         return {
           "status": false,
-          "error": jsonResponse['message'] ?? "Erreur lors de la mise à jour",
+          "error":
+              jsonResponse['message'] ??
+              "Échec de la mise à jour du mot de passe",
         };
       }
     } catch (e) {
-      return {"status": false, "error": "Exception: ${e.toString()}"};
+      return {"status": false, "error": "Erreur de connexion: ${e.toString()}"};
     }
   }
 }

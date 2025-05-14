@@ -22,4 +22,6 @@ class UserModel {
     email: json["email"],
     password: json["password"],
   );
+
+  get id => null;
 }
