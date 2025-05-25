@@ -55,7 +55,7 @@ class _SigninPageState extends State<SigninPage> {
           foregroundColor: Colors.black,
           backgroundColor: Colors.white,
           title: Text(
-            "Sign In",
+            "Se connecter",
             style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
           ),
           centerTitle: true,
@@ -65,7 +65,7 @@ class _SigninPageState extends State<SigninPage> {
           height: double.infinity,
           decoration: BoxDecoration(
             image: DecorationImage(
-              image: AssetImage("assets/maison2.png"),
+              image: AssetImage("assets/maison.png"),
               fit: BoxFit.cover,
             ),
           ),
@@ -82,10 +82,10 @@ class _SigninPageState extends State<SigninPage> {
 
                       Center(
                         child: Text(
-                          "Create an account once and log in to all our services",
+                          "Créez un compte une fois et connectez-vous à tous nos services",
                           textAlign: TextAlign.center,
                           style: TextStyle(
-                            color: Colors.black,
+                            color: const Color.fromARGB(255, 255, 255, 255),
                             fontWeight: FontWeight.w400,
                             fontSize: 24,
                           ),
@@ -93,7 +93,7 @@ class _SigninPageState extends State<SigninPage> {
                       ),
                       SizedBox(height: 10),
                       Text(
-                        "Email or username",
+                        "Email ",
                         style: TextStyle(
                           color: Colors.black,
                           fontSize: 20,
@@ -109,7 +109,7 @@ class _SigninPageState extends State<SigninPage> {
                           border: OutlineInputBorder(
                             borderRadius: BorderRadius.circular(20),
                           ),
-                          labelText: "Email or username",
+                          labelText: "Email ",
                           labelStyle: TextStyle(
                             color: Colors.white,
                             fontSize: 20,
@@ -192,7 +192,7 @@ class _SigninPageState extends State<SigninPage> {
                           crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
                             CupertinoButton(
-                              color: Colors.green,
+                              color: const Color.fromARGB(255, 156, 187, 201),
                               borderRadius: BorderRadius.circular(20),
                               onPressed: () async {
                                 if (_formkey.currentState!.validate()) {
@@ -227,7 +227,7 @@ class _SigninPageState extends State<SigninPage> {
                                 }
                               },
                               child: Text(
-                                "Sign In",
+                                "Se connecter",
                                 style: TextStyle(
                                   color: Colors.white,
                                   fontWeight: FontWeight.bold,
@@ -249,16 +249,21 @@ class _SigninPageState extends State<SigninPage> {
                               child: RichText(
                                 textAlign: TextAlign.center,
                                 text: TextSpan(
-                                  style:
-                                      Theme.of(
-                                        context,
-                                      ).textTheme.headlineSmall!,
+                                  style: Theme.of(
+                                    context,
+                                  ).textTheme.headlineSmall!.copyWith(
+                                    color:
+                                        Colors
+                                            .white, // Appliquer le blanc au texte de base
+                                  ),
                                   children: const <TextSpan>[
-                                    TextSpan(text: "Don’t have an account?  "),
                                     TextSpan(
-                                      text: "Sign Up",
+                                      text: "Vous n'avez pas de compte ? ",
+                                    ),
+                                    TextSpan(
+                                      text: "S'inscrire",
                                       style: TextStyle(
-                                        color: Colors.green,
+                                        color: const Color.fromARGB(255, 156, 187, 201),
                                         fontWeight: FontWeight.bold,
                                       ),
                                     ),

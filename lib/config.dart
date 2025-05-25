@@ -7,6 +7,7 @@ const url = 'http://192.168.100.106:5000/';
 const register = "${url}users/addUserClient/";
 const login = "${url}users/login";
 const getuserbyid = "${url}users/getUserById";
+const deleteuser = "${url}users/deleteUser";
 const updateUserById =
     "${url}users/updateuserById"; // hethi mati5dimtchi b config url f controlller
 
