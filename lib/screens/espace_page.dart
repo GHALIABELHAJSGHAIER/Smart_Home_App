@@ -1,4 +1,5 @@
 import 'package:clone_spotify_mars/bottomappbar_page.dart';
+import 'package:clone_spotify_mars/screens/Maison/pagePortGarage.dart';
 import 'package:clone_spotify_mars/screens/appareil_page.dart';
 import 'package:clone_spotify_mars/screens/signin_page.dart';
 import 'package:flutter/material.dart';
@@ -198,15 +199,16 @@ class _EspacePageState extends State<EspacePage> {
           actions: [
             IconButton(
               icon: const Icon(
-                Icons.logout_outlined,
+                Icons.key_outlined,
                 color: Color.fromARGB(255, 61, 14, 214),
               ),
-              onPressed: () async {
-                await prefs.remove('token');
-                Navigator.pushAndRemoveUntil(
+              onPressed: () {
+                Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (_) => const SigninPage()),
-                  (_) => false,
+                  MaterialPageRoute(
+                    builder:
+                        (context) => PortGaragePage(maisonId: widget.maisonId),
+                  ),
                 );
               },
             ),

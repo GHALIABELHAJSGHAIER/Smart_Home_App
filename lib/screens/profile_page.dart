@@ -466,20 +466,20 @@ class _ProfilePageState extends State<ProfilePage> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                 children: [
-                  _buildActionButton(
-                    icon: Icons.key_outlined,
-                    label: 'Porte',
-                    color: Colors.green,
-                    onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder:
-                              (context) => PortGaragePage(clientId: clientId),
-                        ),
-                      );
-                    },
-                  ),
+                  // _buildActionButton(
+                  //   icon: Icons.key_outlined,
+                  //   label: 'Porte',
+                  //   color: Colors.green,
+                  //   onPressed: () {
+                  //     Navigator.push(
+                  //       context,
+                  //       MaterialPageRoute(
+                  //         builder:
+                  //             (context) => PortGaragePage(clientId: clientId),
+                  //       ),
+                  //     );
+                  //   },
+                  // ),
                   _buildActionButton(
                     icon: Icons.logout_outlined,
                     label: 'Déconnexion',

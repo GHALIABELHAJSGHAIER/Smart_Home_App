@@ -13,28 +13,25 @@ String portGarageModelToJson(List<PortGarageModel> data) =>
 class PortGarageModel {
   final String id;
   bool portGarage; // Changé de final à mutable
-  final String clientId;
+  final String maisonId;
 
   PortGarageModel({
     required this.id,
     required this.portGarage, // Maintenant modifiable
-    required this.clientId,
+    required this.maisonId,
   });
 
   factory PortGarageModel.fromJson(Map<String, dynamic> json) {
     return PortGarageModel(
       id: json["_id"] ?? '',
       portGarage: json["portGarage"] ?? false,
-      clientId:
-          json["client"] is String
-              ? json["client"]
-              : json["client"]?["_id"] ?? '',
+      maisonId: json["maisonId"] ?? '',
     );
   }
 
   Map<String, dynamic> toJson() => {
     "_id": id,
     "portGarage": portGarage,
-    "client": clientId,
+    "maison": maisonId,
   };
 }

@@ -1,4 +1,3 @@
-
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
@@ -6,9 +5,9 @@ import 'package:clone_spotify_mars/controllers/Maison/portGarage_controller.dart
 //import 'package:clone_spotify_mars/models/Maison/portGarage_model.dart';
 
 class PortGaragePage extends StatefulWidget {
-  final String clientId;
+  final String maisonId;
 
-  const PortGaragePage({Key? key, required this.clientId}) : super(key: key);
+  const PortGaragePage({Key? key, required this.maisonId}) : super(key: key);
 
   @override
   _PortGaragePageState createState() => _PortGaragePageState();
@@ -24,7 +23,7 @@ class _PortGaragePageState extends State<PortGaragePage> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      portGarageController.getPortGarageByIdClient(widget.clientId);
+      portGarageController.getPortGarageByIdMaison(widget.maisonId);
     });
   }
 
@@ -88,7 +87,7 @@ class _PortGaragePageState extends State<PortGaragePage> {
           IconButton(
             icon: const Icon(Icons.refresh),
             onPressed: () {
-              portGarageController.getPortGarageByIdClient(widget.clientId);
+              portGarageController.getPortGarageByIdMaison(widget.maisonId);
             },
           ),
         ],

@@ -15,7 +15,7 @@ class PortgarageController extends GetxController {
 
   late Timer _timer;
 
-  String clientId = "";
+  String maisonId = "";
 
   @override
   void onInit() {
@@ -26,22 +26,22 @@ class PortgarageController extends GetxController {
   void _fetchDataPeriodically() {
     _timer = Timer.periodic(
       Duration(seconds: 10),
-      (_) => getPortGarageByIdClient(clientId),
+      (_) => getPortGarageByIdMaison(maisonId),
     );
   }
 
-  Future<void> getPortGarageByIdClient(String id) async {
-    clientId = id;
-    print("getPortGarageByIdClient WWWWWWWWW");
-    print(clientId);
+  Future<void> getPortGarageByIdMaison(String id) async {
+    maisonId = id;
+    print("getPortGarageByIdMaison WWWWWWWWW");
+    print(maisonId);
     try {
-      //final response = await http.get(Uri.parse("$getPortGarageByIdClient/$id"));
+      //final response = await http.get(Uri.parse("$getPortGarageByIdMaison/$id"));
       final response = await http.get(
         //192.168.100.106 WIFI OOREDOO
         //192.168.1.102 WIFI NET
         Uri.parse(
-          //"http://192.168.1.102:5000/garages/getPortGarageByIdClient/$id",
-          "http://192.168.100.106:5000/garages/getPortGarageByIdClient/$id",
+          //"http://192.168.1.102:5000/garages/getPortGarageByIdMaison/$id",
+          "http://192.168.100.106:5000/garages/getPortGarageByIdMaison/$id",
         ),
       );
       if (response.statusCode == 200) {
@@ -75,7 +75,7 @@ class PortgarageController extends GetxController {
     try {
       final response = await http.put(
         Uri.parse(
-         // "http://192.168.1.102:5000/garages/updatePortGarageByIdGarage/$id",
+          // "http://192.168.1.102:5000/garages/updatePortGarageByIdGarage/$id",
           "http://192.168.100.106:5000/garages/updatePortGarageByIdGarage/$id",
         ),
         headers: {'Content-Type': 'application/json'},
@@ -92,7 +92,7 @@ class PortgarageController extends GetxController {
                   return PortGarageModel(
                     id: garage.id,
                     portGarage: portGarage, // Nouvelle valeur
-                    clientId: garage.clientId,
+                    maisonId: garage.maisonId,
                   );
                 }
                 return garage;
