@@ -1,4 +1,5 @@
 import 'package:clone_spotify_mars/bottomappbar_page.dart';
+import 'package:clone_spotify_mars/screens/Maison/pageAlarme.dart';
 import 'package:clone_spotify_mars/screens/Maison/pagePortGarage.dart';
 import 'package:clone_spotify_mars/screens/appareil_page.dart';
 import 'package:clone_spotify_mars/screens/signin_page.dart';
@@ -226,6 +227,32 @@ class _EspacePageState extends State<EspacePage> {
           child: Column(
             children: [
               Center(child: Image.asset("assets/logo_text.png")),
+              const SizedBox(height: 10),
+              // Nouveau bouton vers Alarme 
+              ElevatedButton.icon(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder:
+                          (_) => AlarmePage(
+                            maisonId: widget.maisonId 
+                          ),
+                    ),
+                  );
+                },
+                icon: const Icon(Icons.alarm),
+                label: const Text("Gérer les Alarmes"),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.deepPurple,
+                  foregroundColor: Colors.white,
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 16,
+                    vertical: 12,
+                  ),
+                ),
+              ),
+
               const SizedBox(height: 10),
               Expanded(
                 child: FutureBuilder<List<EspaceModel>>(
