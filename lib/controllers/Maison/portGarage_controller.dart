@@ -140,6 +140,34 @@ class PortgarageController extends GetxController {
     }
   }
 
+  Future<void> deleteHistoriqueById(String id) async {
+    try {
+      final response = await http.delete(
+        Uri.parse(
+          //"http://192.168.1.102:5000/garages/deleteHistoriqueById/$id",
+          "http://192.168.100.106:5000/garages/deleteHistoriqueById/$id",
+        ),
+      );
+
+      if (response.statusCode == 200) {
+        final body = jsonDecode(response.body);
+
+        if (body['status'] == true) {
+          historique.removeWhere((element) => element.id == id);
+          debugPrint("Historique supprimé avec succès !");
+        } else {
+          debugPrint("Erreur lors de la suppression : ${body['message']}");
+        }
+      } else {
+        debugPrint(
+          "Erreur serveur : ${response.statusCode} - ${response.body}",
+        );
+      }
+    } catch (e) {
+      debugPrint("Exception deleteHistoriqueById: $e");
+    }
+  }
+
   @override
   void onClose() {
     _timer.cancel();

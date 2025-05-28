@@ -61,6 +61,43 @@ class _PortGaragePageState extends State<PortGaragePage> {
                             subtitle: Text(
                               DateFormat('dd/MM HH:mm').format(item.date),
                             ),
+                            trailing: IconButton(
+                              icon: Icon(Icons.delete, color: Colors.red),
+                              onPressed: () async {
+                                final confirm = await showDialog<bool>(
+                                  context: context,
+                                  builder:
+                                      (_) => AlertDialog(
+                                        title: const Text("Confirmation"),
+                                        content: const Text(
+                                          "Voulez-vous vraiment supprimer cet historique ?",
+                                        ),
+                                        actions: [
+                                          TextButton(
+                                            onPressed:
+                                                () => Navigator.pop(
+                                                  context,
+                                                  false,
+                                                ),
+                                            child: const Text("Annuler"),
+                                          ),
+                                          TextButton(
+                                            onPressed:
+                                                () => Navigator.pop(
+                                                  context,
+                                                  true,
+                                                ),
+                                            child: const Text("Supprimer"),
+                                          ),
+                                        ],
+                                      ),
+                                );
+
+                                if (confirm == true) {
+                                  controller.deleteHistoriqueById(item.id);
+                                }
+                              },
+                            ),
                           );
                         },
                       ),
