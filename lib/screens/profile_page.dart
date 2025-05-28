@@ -495,23 +495,15 @@ class _ProfilePageState extends State<ProfilePage> {
                       );
                     },
                   ),
-                  // Moved "Supprimer le compte" button here for better visual grouping
+                  // Use _buildActionButton for "Supprimer le compte"
+                  _buildActionButton(
+                    icon: Icons.delete_forever,
+                    label: 'Supprimer le compte',
+                    color: Colors.red,
+                    onPressed: _showDeleteAccountDialog,
+                  ),
                 ],
               ),
-            ),
-            // Placed delete button outside the row to give it full width if desired
-            ElevatedButton.icon(
-              icon: const Icon(Icons.delete_forever, color: Colors.white),
-              label: const Text("Supprimer le compte"),
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.red,
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 20,
-                  vertical: 12,
-                ),
-                textStyle: const TextStyle(fontWeight: FontWeight.bold),
-              ),
-              onPressed: _showDeleteAccountDialog,
             ),
           ],
         ),
