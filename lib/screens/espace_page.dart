@@ -228,27 +228,31 @@ class _EspacePageState extends State<EspacePage> {
             children: [
               Center(child: Image.asset("assets/logo_text.png")),
               const SizedBox(height: 10),
-              // Nouveau bouton vers Alarme 
               ElevatedButton.icon(
                 onPressed: () {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder:
-                          (_) => AlarmePage(
-                            maisonId: widget.maisonId 
-                          ),
+                      builder: (_) => AlarmePage(maisonId: widget.maisonId),
                     ),
                   );
                 },
-                icon: const Icon(Icons.alarm),
-                label: const Text("Gérer les Alarmes"),
+                icon: const Icon(Icons.alarm_on_rounded, size: 26),
+                label: const Text(
+                  "Sécuriser ma Maison",
+                  style: TextStyle(fontSize: 16, fontWeight: FontWeight.w600),
+                ),
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.deepPurple,
+                  backgroundColor: Colors.redAccent.shade700,
                   foregroundColor: Colors.white,
+                  elevation: 6,
+                  shadowColor: Colors.redAccent.withOpacity(0.4),
                   padding: const EdgeInsets.symmetric(
-                    horizontal: 16,
-                    vertical: 12,
+                    horizontal: 20,
+                    vertical: 14,
+                  ),
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(12),
                   ),
                 ),
               ),
