@@ -1,7 +1,6 @@
-// screens/ProfilePage.dart
 import 'package:clone_spotify_mars/controllers/auth_controller.dart';
 import 'package:clone_spotify_mars/models/user_model.dart';
-import 'package:clone_spotify_mars/screens/Maison/pagePortGarage.dart';
+
 import 'package:clone_spotify_mars/screens/gemini_page.dart';
 import 'package:clone_spotify_mars/screens/signin_page.dart';
 import 'package:flutter/cupertino.dart'; // For CupertinoIcons
@@ -40,6 +39,7 @@ class _ProfilePageState extends State<ProfilePage> {
     _usernameController = TextEditingController();
     _telephoneController = TextEditingController();
     _emailController = TextEditingController();
+
     initSharedPref();
   }
 
@@ -394,8 +394,13 @@ class _ProfilePageState extends State<ProfilePage> {
             FutureBuilder<List<UserModel>>(
               future: controller.getUserById(clientId),
               builder: (context, snapshot) {
+                // if (snapshot.connectionState == ConnectionState.waiting) {
+                //   return const Center(child: CircularProgressIndicator());
+                // }
                 if (snapshot.connectionState == ConnectionState.waiting) {
-                  return const Center(child: CircularProgressIndicator());
+                  return const CircularProgressIndicator();
+                } else if (snapshot.hasError) {
+                  return const Icon(Icons.error, color: Colors.red);
                 }
 
                 if (snapshot.hasError) {
