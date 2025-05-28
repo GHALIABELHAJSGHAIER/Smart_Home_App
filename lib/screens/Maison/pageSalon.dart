@@ -112,14 +112,15 @@ class PageSalon extends StatelessWidget {
                           _buildControlSwitch(
                             icon: Icons.arrow_upward_rounded,
                             label: "Ouvrir fenêtre",
-                            value: salon.relayOpenWindow,
+                            value: salon.relayOpenWindowSalon,
                             activeColor: Colors.blue,
                             onChanged: (value) {
                               controller.updateRelayStatus(
                                 id: salon.id,
-                                relayOpenWindow: value,
-                                relayCloseWindow: salon.relayCloseWindow,
-                                relayClim: salon.relayClim,
+                                relayOpenWindowSalon: value,
+                                relayCloseWindowSalon:
+                                    salon.relayCloseWindowSalon,
+                                relayClimSalon: salon.relayClimSalon,
                               );
                             },
                           ),
@@ -127,28 +128,31 @@ class PageSalon extends StatelessWidget {
                           _buildControlSwitch(
                             icon: Icons.arrow_downward_rounded,
                             label: "Fermer fenêtre",
-                            value: salon.relayCloseWindow,
+                            value: salon.relayCloseWindowSalon,
                             activeColor: Colors.blue.shade800,
                             onChanged: (value) {
                               controller.updateRelayStatus(
                                 id: salon.id,
-                                relayOpenWindow: salon.relayOpenWindow,
-                                relayCloseWindow: value,
-                                relayClim: salon.relayClim,
+                                relayOpenWindowSalon:
+                                    salon.relayOpenWindowSalon,
+                                relayCloseWindowSalon: value,
+                                relayClimSalon: salon.relayClimSalon,
                               );
                             },
                           ),
                           _buildControlSwitch(
                             icon: Icons.ac_unit,
                             label: "Climatisation",
-                            value: salon.relayClim,
+                            value: salon.relayClimSalon,
                             activeColor: Colors.teal,
                             onChanged: (value) {
                               controller.updateRelayStatus(
                                 id: salon.id,
-                                relayOpenWindow: salon.relayOpenWindow,
-                                relayCloseWindow: salon.relayCloseWindow,
-                                relayClim: value,
+                                relayOpenWindowSalon:
+                                    salon.relayOpenWindowSalon,
+                                relayCloseWindowSalon:
+                                    salon.relayCloseWindowSalon,
+                                relayClimSalon: value,
                               );
                             },
                           ),

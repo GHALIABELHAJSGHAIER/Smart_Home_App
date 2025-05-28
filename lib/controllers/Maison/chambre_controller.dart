@@ -70,7 +70,7 @@ class ChambreController extends GetxController {
     String id,
     bool relayOpenWindow,
     bool relayCloseWindow,
-    bool relayClim,
+    bool relayClimChambre,
     bool relayLamp,
   ) async {
     try {
@@ -80,7 +80,7 @@ class ChambreController extends GetxController {
         body: jsonEncode({
           'relayOpenWindow': relayOpenWindow,
           'relayCloseWindow': relayCloseWindow,
-          'relayClim': relayClim,
+          'relayClimChambre': relayClimChambre,
           'relayLamp': relayLamp,
         }),
       );
@@ -94,7 +94,7 @@ class ChambreController extends GetxController {
           );
           updatedChambre.relayOpenWindow = relayOpenWindow;
           updatedChambre.relayCloseWindow = relayCloseWindow;
-          updatedChambre.relayClim = relayClim;
+          updatedChambre.relayClimChambre = relayClimChambre;
           updatedChambre.relayLamp = relayLamp;
           chambres.refresh();
           //debugPrint("Mise à jour réussie : ${updatedChambre.relayInc}");

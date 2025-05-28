@@ -31,8 +31,8 @@ class SalonController extends GetxController {
     espaceId = id;
     try {
       final response = await http.get(
-       // Uri.parse("http://192.168.1.102:5000/salons/getSalonByIdEspace/$id"),
-         Uri.parse("http://192.168.100.106:5000/salons/getSalonByIdEspace/$id"),
+        // Uri.parse("http://192.168.1.102:5000/salons/getSalonByIdEspace/$id"),
+        Uri.parse("http://192.168.100.106:5000/salons/getSalonByIdEspace/$id"),
         // Uri.parse("$getSalonByIdEspace/$id"),
       );
 
@@ -55,9 +55,9 @@ class SalonController extends GetxController {
 
   Future<void> updateRelayStatus({
     required String id,
-    required bool relayOpenWindow,
-    required bool relayCloseWindow,
-    required bool relayClim,
+    required bool relayOpenWindowSalon,
+    required bool relayCloseWindowSalon,
+    required bool relayClimSalon,
   }) async {
     try {
       final response = await http.put(
@@ -65,9 +65,9 @@ class SalonController extends GetxController {
         Uri.parse("$updateRelayByIdSalon/$id"),
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode({
-          'relayOpenWindow': relayOpenWindow,
-          'relayCloseWindow': relayCloseWindow,
-          'relayClim': relayClim,
+          'relayOpenWindowSalon': relayOpenWindowSalon,
+          'relayCloseWindowSalon': relayCloseWindowSalon,
+          'relayClimSalon': relayClimSalon,
         }),
       );
 
@@ -75,9 +75,9 @@ class SalonController extends GetxController {
         final body = jsonDecode(response.body);
         if (body['status'] == true) {
           final updated = salons.firstWhere((s) => s.id == id);
-          updated.relayOpenWindow = relayOpenWindow;
-          updated.relayCloseWindow = relayCloseWindow;
-          updated.relayClim = relayClim;
+          updated.relayOpenWindowSalon = relayOpenWindowSalon;
+          updated.relayCloseWindowSalon = relayCloseWindowSalon;
+          updated.relayClimSalon = relayClimSalon;
           salons.refresh();
         } else {
           print("Échec mise à jour : ${body['message']}");

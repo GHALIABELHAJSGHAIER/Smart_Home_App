@@ -89,8 +89,8 @@ class PageChambre extends StatelessWidget {
 
                       // Environnement
                       _buildEnvironmentCard(
-                        temperature: chambre.temperature.toDouble(),
-                        humidity: chambre.humidity.toDouble(),
+                        tempChambre: chambre.tempChambre.toDouble(),
+                        humChambre: chambre.humChambre.toDouble(),
                       ),
 
                       SizedBox(height: 24),
@@ -124,7 +124,7 @@ class PageChambre extends StatelessWidget {
                                 chambre.id,
                                 value,
                                 chambre.relayCloseWindow,
-                                chambre.relayClim,
+                                chambre.relayClimChambre,
                                 chambre.relayLamp,
                               );
                             },
@@ -133,7 +133,7 @@ class PageChambre extends StatelessWidget {
                           _buildControlSwitch(
                             icon: Icons.ac_unit,
                             label: "Climatisation",
-                            value: chambre.relayClim,
+                            value: chambre.relayClimChambre,
                             activeColor: Colors.teal,
                             onChanged: (value) {
                               controller.updateRelayStatus(
@@ -155,7 +155,7 @@ class PageChambre extends StatelessWidget {
                                 chambre.id,
                                 chambre.relayOpenWindow,
                                 chambre.relayCloseWindow,
-                                chambre.relayClim,
+                                chambre.relayClimChambre,
                                 value,
                               );
                             },
@@ -171,7 +171,7 @@ class PageChambre extends StatelessWidget {
                                 chambre.id,
                                 chambre.relayOpenWindow,
                                 value,
-                                chambre.relayClim,
+                                chambre.relayClimChambre,
                                 chambre.relayLamp,
                               );
                             },
@@ -190,8 +190,8 @@ class PageChambre extends StatelessWidget {
   }
 
   Widget _buildEnvironmentCard({
-    required double temperature,
-    required double humidity,
+    required double tempChambre,
+    required double humChambre,
   }) {
     return Container(
       padding: EdgeInsets.all(12),
@@ -204,13 +204,13 @@ class PageChambre extends StatelessWidget {
         children: [
           _buildEnvironmentItem(
             icon: Icons.thermostat,
-            value: "$temperature°C",
+            value: "$tempChambre°C",
             label: "Température",
             color: Colors.red.shade400,
           ),
           _buildEnvironmentItem(
             icon: Icons.water_drop,
-            value: "$humidity%",
+            value: "$humChambre%",
             label: "Humidité",
             color: Colors.blue.shade400,
           ),

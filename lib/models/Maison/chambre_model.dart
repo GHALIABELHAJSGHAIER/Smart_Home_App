@@ -11,44 +11,44 @@ String chambreModelToJson(List<ChambreModel> data) =>
 
 class ChambreModel {
   String id;
-  bool relayClim;
+  bool relayClimChambre;
   bool relayLamp;
   bool relayOpenWindow;
   bool relayCloseWindow;
-  double temperature;
-  int humidity;
+  double tempChambre;
+  int humChambre;
   EspaceModel espace;
 
   ChambreModel({
     required this.id,
-    required this.relayClim,
+    required this.relayClimChambre,
     required this.relayLamp,
     required this.relayOpenWindow,
     required this.relayCloseWindow,
-    required this.temperature,
-    required this.humidity,
+    required this.tempChambre,
+    required this.humChambre,
     required this.espace,
   });
 
   factory ChambreModel.fromJson(Map<String, dynamic> json) => ChambreModel(
     id: json["_id"],
-    relayClim: json["relayClim"],
+    relayClimChambre: json["relayClimChambre"],
     relayLamp: json["relayLamp"],
     relayOpenWindow: json["relayOpenWindow"],
     relayCloseWindow: json["relayCloseWindow"],
-    temperature: json["temperature"]?.toDouble(),
-    humidity: json["humidity"],
+    tempChambre: json["tempChambre"]?.toDouble(),
+    humChambre: json["humChambre"],
     espace: EspaceModel.fromJson(json["espace"]),
   );
 
   Map<String, dynamic> toJson() => {
     "_id": id,
-    "relayClim": relayClim,
+    "relayClimChambre": relayClimChambre,
     "relayLamp": relayLamp,
     "relayOpenWindow": relayOpenWindow,
     "relayCloseWindow": relayCloseWindow,
-    "temperature": temperature,
-    "humidity": humidity,
+    "tempChambre": tempChambre,
+    "humChambre": humChambre,
     "espace": espace.toJson(),
   };
 }
