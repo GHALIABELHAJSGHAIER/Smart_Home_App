@@ -85,8 +85,8 @@ class PageSalon extends StatelessWidget {
 
                       // Environnement
                       _buildEnvironmentCard(
-                        temperature: salon.temperature,
-                        humidity: salon.humidity.toDouble(),
+                        tempSalon: salon.tempSalon,
+                        humSalon: salon.humSalon.toDouble(),
                       ),
 
                       SizedBox(height: 24),
@@ -170,8 +170,8 @@ class PageSalon extends StatelessWidget {
   }
 
   Widget _buildEnvironmentCard({
-    required double temperature,
-    required double humidity,
+    required double tempSalon,
+    required double humSalon,
   }) {
     return Container(
       padding: EdgeInsets.all(12),
@@ -184,13 +184,13 @@ class PageSalon extends StatelessWidget {
         children: [
           _buildEnvironmentItem(
             icon: Icons.thermostat,
-            value: "$temperature°C",
+            value: "$tempSalon°C",
             label: "Température",
             color: Colors.red.shade400,
           ),
           _buildEnvironmentItem(
             icon: Icons.water_drop,
-            value: "$humidity%",
+            value: "$humSalon%",
             label: "Humidité",
             color: Colors.blue.shade400,
           ),

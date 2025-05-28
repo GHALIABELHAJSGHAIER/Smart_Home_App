@@ -13,8 +13,8 @@ class SalonModel {
   bool relayOpenWindowSalon;
   bool relayClimSalon;
   bool relayCloseWindowSalon;
-  double temperature;
-  int humidity;
+  double tempSalon;
+  int humSalon;
   EspaceModel espace;
 
   SalonModel({
@@ -22,8 +22,8 @@ class SalonModel {
     required this.relayOpenWindowSalon,
     required this.relayClimSalon,
     required this.relayCloseWindowSalon,
-    required this.temperature,
-    required this.humidity,
+    required this.tempSalon,
+    required this.humSalon,
     required this.espace,
   });
 
@@ -32,8 +32,8 @@ class SalonModel {
     relayOpenWindowSalon: json["relayOpenWindowSalon"],
     relayClimSalon: json["relayClimSalon"],
     relayCloseWindowSalon: json["relayCloseWindowSalon"],
-    temperature: json["temperature"]?.toDouble(),
-    humidity: json["humidity"],
+    tempSalon: json["tempSalon"]?.toDouble(),
+    humSalon: json["humSalon"],
     espace: EspaceModel.fromJson(json["espace"]),
   );
 
@@ -42,8 +42,8 @@ class SalonModel {
     "relayOpenWindowSalon": relayOpenWindowSalon,
     "relayClimSalon": relayClimSalon,
     "relayCloseWindowSalon": relayCloseWindowSalon,
-    "temperature": temperature,
-    "humidity": humidity,
+    "tempSalon": tempSalon,
+    "humSalon": humSalon,
     "espace": espace.toJson(),
   };
 }
