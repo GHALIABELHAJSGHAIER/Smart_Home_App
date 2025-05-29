@@ -82,7 +82,7 @@ class _HomePageState extends State<HomePage> {
       context: context,
       builder: (context) {
         return AlertDialog(
-          title: const Text("Ajouter une Espace"),
+          title: const Text("Ajouter une Maison"),
           content: SingleChildScrollView(
             child: Form(
               key: _formKey,
@@ -232,7 +232,7 @@ class _HomePageState extends State<HomePage> {
           foregroundColor: Colors.black,
           backgroundColor: Colors.white,
           title: const Text(
-            "Home Page",
+            "Mes Maisons",
             style: TextStyle(fontSize: 24, fontWeight: FontWeight.w400),
           ),
           centerTitle: true,
