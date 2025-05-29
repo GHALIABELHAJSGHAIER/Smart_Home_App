@@ -89,7 +89,7 @@ class _SignupPageState extends State<SignupPage> {
                     Text(
                       "Username",
                       style: TextStyle(
-                        color: Colors.black,
+                        color: Colors.white,
                         fontSize: 20,
                         fontWeight: FontWeight.bold,
                       ),
@@ -124,7 +124,7 @@ class _SignupPageState extends State<SignupPage> {
                     Text(
                       "Téléphone",
                       style: TextStyle(
-                        color: Colors.black,
+                        color: Colors.white,
                         fontSize: 20,
                         fontWeight: FontWeight.bold,
                       ),
@@ -165,7 +165,7 @@ class _SignupPageState extends State<SignupPage> {
                     Text(
                       "Email",
                       style: TextStyle(
-                        color: Colors.black,
+                        color: Colors.white,
                         fontSize: 20,
                         fontWeight: FontWeight.bold,
                       ),
@@ -203,7 +203,7 @@ class _SignupPageState extends State<SignupPage> {
                     Text(
                       "Password",
                       style: TextStyle(
-                        color: Colors.black,
+                        color: Colors.white,
                         fontSize: 20,
                         fontWeight: FontWeight.bold,
                       ),

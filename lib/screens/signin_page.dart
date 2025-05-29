@@ -95,7 +95,7 @@ class _SigninPageState extends State<SigninPage> {
                       Text(
                         "Email ",
                         style: TextStyle(
-                          color: Colors.black,
+                          color: Colors.white,
                           fontSize: 20,
                           fontWeight: FontWeight.bold,
                         ),
@@ -132,7 +132,7 @@ class _SigninPageState extends State<SigninPage> {
                       Text(
                         "Password",
                         style: TextStyle(
-                          color: Colors.black,
+                          color: Colors.white,
                           fontSize: 20,
                           fontWeight: FontWeight.bold,
                         ),
@@ -263,7 +263,12 @@ class _SigninPageState extends State<SigninPage> {
                                     TextSpan(
                                       text: "S'inscrire",
                                       style: TextStyle(
-                                        color: const Color.fromARGB(255, 156, 187, 201),
+                                        color: const Color.fromARGB(
+                                          255,
+                                          156,
+                                          187,
+                                          201,
+                                        ),
                                         fontWeight: FontWeight.bold,
                                       ),
                                     ),
