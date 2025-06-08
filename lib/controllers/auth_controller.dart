@@ -81,7 +81,7 @@ class AuthController extends GetxController {
     try {
       final response = await http.delete(
         Uri.parse(
-          "http://192.168.100.106:5000/users/deleteUser/$id",
+          "http://192.168.1.102:5000/users/deleteUser/$id",
         ), // Replace with your actual delete endpoint
         headers: {"Content-Type": "application/json"},
       );
@@ -135,7 +135,7 @@ class AuthController extends GetxController {
       }
 
       final response = await http.put(
-        Uri.parse("http://192.168.100.106:5000/users/updateUserById/$id"),
+        Uri.parse("http://192.168.1.102:5000/users/updateUserById/$id"),
         headers: {"Content-Type": "application/json"},
         body: jsonEncode(updateData),
       );
@@ -174,7 +174,7 @@ class AuthController extends GetxController {
   ) async {
     try {
       final response = await http.put(
-        Uri.parse("http://192.168.100.106:5000/users/updatePassword/$id"),
+        Uri.parse("http://192.168.1.102:5000/users/updatePassword/$id"),
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode({
           'currentPassword': currentPassword,

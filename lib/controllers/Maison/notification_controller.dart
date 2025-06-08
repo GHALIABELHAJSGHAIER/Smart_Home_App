@@ -36,7 +36,7 @@ class NotificationController extends GetxController {
     try {
       final response = await http.get(
         Uri.parse(
-          "http://192.168.100.106:5000/notifications/getNotificationsByAlarmeId/$alarmeId",
+          "http://192.168.1.102:5000/notifications/getNotificationsByAlarmeId/$alarmeId",
         ),
       );
 
@@ -72,7 +72,7 @@ class NotificationController extends GetxController {
     try {
       final response = await http.delete(
         Uri.parse(
-          "http://192.168.100.106:5000/notifications/deleteNotificationById/$idNotification",
+          "http://192.168.1.102:5000/notifications/deleteNotificationById/$idNotification",
         ),
       );
 

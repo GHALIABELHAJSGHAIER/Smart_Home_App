@@ -34,9 +34,7 @@ class AlarmeController extends GetxController {
 
     try {
       final response = await http.get(
-        Uri.parse(
-          "http://192.168.100.106:5000/alarmes/getAlarmeByIdMaison/$id",
-        ),
+        Uri.parse("http://192.168.1.102:5000/alarmes/getAlarmeByIdMaison/$id"),
       );
 
       if (response.statusCode == 200) {
@@ -76,7 +74,7 @@ class AlarmeController extends GetxController {
   //   try {
   //     final response = await http.get(
   //       Uri.parse(
-  //         "http://192.168.100.106:5000/alarmes/getAlarmeByIdMaison/$id",
+  //         "http://192.168.1.102:5000/alarmes/getAlarmeByIdMaison/$id",
   //       ),
   //     );
 
@@ -105,7 +103,7 @@ class AlarmeController extends GetxController {
     try {
       final response = await http.put(
         Uri.parse(
-          "http://192.168.100.106:5000/alarmes/updateEtatAlarmeByIdAlarme/$id",
+          "http://192.168.1.102:5000/alarmes/updateEtatAlarmeByIdAlarme/$id",
         ),
         headers: {'Content-Type': 'application/json'},
         body: jsonEncode({'etat': etat}),
@@ -160,7 +158,7 @@ class AlarmeController extends GetxController {
   //   try {
   //     final response = await http.put(
   //       Uri.parse(
-  //         "http://192.168.100.106:5000/alarmes/updateEtatAlarmeByIdAlarme/$id",
+  //         "http://192.168.1.102:5000/alarmes/updateEtatAlarmeByIdAlarme/$id",
   //       ),
   //       headers: {'Content-Type': 'application/json'},
   //       body: jsonEncode({'etat': etat}),
@@ -208,7 +206,7 @@ class AlarmeController extends GetxController {
   //   try {
   //     final response = await http.put(
   //       Uri.parse(
-  //         "http://192.168.100.106:5000/alarmes/updateEtatAlarmeByIdAlarme/$id",
+  //         "http://192.168.1.102:5000/alarmes/updateEtatAlarmeByIdAlarme/$id",
   //       ),
   //       headers: {'Content-Type': 'application/json'},
   //       body: jsonEncode({'etat': etat}),
