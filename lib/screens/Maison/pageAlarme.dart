@@ -39,7 +39,7 @@ class AlarmePage extends StatelessWidget {
                   ..sort((a, b) => b.date.compareTo(a.date));
 
             return AlertDialog(
-              title: const Text("Détails de l'alarme"),
+              title: const Text("Notifications"),
               content: Container(
                 width: double.maxFinite,
                 child:

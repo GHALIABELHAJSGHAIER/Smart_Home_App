@@ -160,7 +160,7 @@ class _PortGaragePageState extends State<PortGaragePage> {
                             ),
                             const SizedBox(width: 10),
                             Text(
-                              "Porte de garage #${index + 1}",
+                              "Porte de garage ",
                               style: const TextStyle(
                                 fontSize: 18,
                                 fontWeight: FontWeight.bold,
