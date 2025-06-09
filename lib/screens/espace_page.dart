@@ -326,11 +326,11 @@ class _EspacePageState extends State<EspacePage> {
                             ),
                             title: Text(
                               espace.nom ?? '',
-                              style: const TextStyle(color: Colors.white),
+                              style: const TextStyle(color: Colors.black),
                             ),
                             subtitle: Text(
                               espace.type ?? '',
-                              style: const TextStyle(color: Colors.white70),
+                              style: const TextStyle(color: Colors.black),
                             ),
                             trailing: Wrap(
                               spacing: 5,
