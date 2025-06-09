@@ -220,7 +220,7 @@ class _EspacePageState extends State<EspacePage> {
           width: double.infinity,
           decoration: const BoxDecoration(
             image: DecorationImage(
-              image: AssetImage("assets/backgroundd.png"),
+              image: AssetImage("assets/SMART.jpg"),
               fit: BoxFit.cover,
             ),
           ),

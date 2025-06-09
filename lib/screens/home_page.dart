@@ -261,7 +261,7 @@ class _HomePageState extends State<HomePage> {
           padding: const EdgeInsets.all(10),
           decoration: const BoxDecoration(
             image: DecorationImage(
-              image: AssetImage("assets/backgroundd.png"),
+              image: AssetImage("assets/SMART.jpg"),
               fit: BoxFit.cover,
             ),
           ),
