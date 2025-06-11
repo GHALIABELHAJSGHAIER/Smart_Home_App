@@ -1,7 +1,6 @@
 import 'package:clone_spotify_mars/controllers/Maison/cuisine_controller.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
- 
 
 class PageCuisine extends StatelessWidget {
   final String espaceId;
@@ -96,20 +95,16 @@ class PageCuisine extends StatelessWidget {
                           children: [
                             _buildDetectionItem(
                               icon: Icons.local_fire_department,
-                              value:
-                                  (cuisine.flamme > 10) ? "Détectée" : "Aucune",
+                              value: cuisine.flamme ? "Détectée" : "Aucune",
                               label: "Flamme",
-                              color:
-                                  (cuisine.flamme > 10)
-                                      ? Colors.red
-                                      : Colors.green,
+                              color: cuisine.flamme ? Colors.red : Colors.green,
                             ),
                             _buildDetectionItem(
                               icon: Icons.gas_meter,
-                              value: (cuisine.gaz > 10) ? "Détecté" : "Aucun",
+                              value: cuisine.gaz ? "Détecté" : "Aucun",
                               label: "Gaz",
                               color:
-                                  (cuisine.gaz > 10)
+                                  cuisine.gaz
                                       ? Colors.deepOrange
                                       : Colors.green,
                             ),
